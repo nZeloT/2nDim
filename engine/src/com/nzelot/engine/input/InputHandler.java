@@ -22,18 +22,33 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.input;
 
-import java.io.File;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
-public interface IResourceLoader {
+import static org.lwjgl.glfw.GLFW.*;
 
-    /**
-     * Method that gets called to a registered IResourceLoader when a file with the specified file extension is to be
-     * loaded
-     * @param f the file to be loaded
-     * @return the resource object which contains the necessary data
-     */
-    Resource load(File f);
+public class InputHandler extends GLFWKeyCallback {
+
+    private static boolean keys[];
+    private long windowID;
+
+    public InputHandler(long window) {
+        keys = new boolean[65536];
+        windowID = window;
+    }
+
+    public static boolean isKeyDown(int key) {
+        return InputHandler.keys[key];
+    }
+
+    @Override
+    public void invoke(long window, int key, int scancode, int action, int mods) {
+
+        if (window == this.windowID) {
+            InputHandler.keys[key] = action != GLFW_RELEASE;
+        }
+
+    }
 
 }

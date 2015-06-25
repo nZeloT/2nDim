@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 nZeloT
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.nzelot.engine.resources;
 
 import java.io.File;
@@ -7,23 +31,21 @@ import java.util.Map;
 /**
  * A simple Resource Manager with some basic features
  */
+//TODO: rework
 public class ResourceManager {
 
-    private static ResourceManager instance = new ResourceManager();
-
-    public static ResourceManager get(){
-        return instance;
-    }
+    private static final ResourceManager instance = new ResourceManager();
+    private final Map<String, IResourceLoader> loader;
 
     //******************************************************************************************************************
-
-    private Map<String, IResourceLoader>    loader;
-    private Map<String, Resource>           resourceMap;
-
-
+    private final Map<String, Resource> resourceMap;
     private ResourceManager(){
         loader      = new HashMap<>();
         resourceMap = new HashMap<>();
+    }
+
+    public static ResourceManager get() {
+        return instance;
     }
 
     /**
@@ -52,6 +74,12 @@ public class ResourceManager {
         loadResources(dir, "/");
     }
 
+    /**
+     * Retrieve one single, loaded resource
+     *
+     * @param identifier the resource identifier
+     * @return the loaded resource
+     */
     public Resource getResource(String identifier){
         Resource r = resourceMap.get(identifier);
         return r.getClass().cast(r);

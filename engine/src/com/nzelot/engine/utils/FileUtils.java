@@ -22,18 +22,34 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.utils;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-public interface IResourceLoader {
+/**
+ * taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
+ */
+public class FileUtils {
 
-    /**
-     * Method that gets called to a registered IResourceLoader when a file with the specified file extension is to be
-     * loaded
-     * @param f the file to be loaded
-     * @return the resource object which contains the necessary data
-     */
-    Resource load(File f);
+    private FileUtils() {
+    }
+
+    public static String loadAsString(String file) {
+
+        StringBuilder result = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String buffer = br.readLine();
+            while ((buffer = br.readLine()) != null)
+                result.append(buffer + "\n");
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
+    }
 
 }

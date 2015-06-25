@@ -22,18 +22,19 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.utils.logging;
 
-import java.io.File;
+public class DefaultLogger extends Logger {
 
-public interface IResourceLoader {
+    @Override
+    protected void log(String s, LEVEL logLevel, LEVEL currentOutputLevel) {
+        if (logLevel.getPriority() <= currentOutputLevel.getPriority()) {
 
-    /**
-     * Method that gets called to a registered IResourceLoader when a file with the specified file extension is to be
-     * loaded
-     * @param f the file to be loaded
-     * @return the resource object which contains the necessary data
-     */
-    Resource load(File f);
+            if (logLevel.getPriority() <= 1)
+                System.err.println(s);
+            else
+                System.out.println(s);
+        }
+    }
 
 }

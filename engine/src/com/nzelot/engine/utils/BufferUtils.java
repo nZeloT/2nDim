@@ -22,18 +22,37 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.utils;
 
-import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
-public interface IResourceLoader {
+/**
+ * taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
+ */
+public class BufferUtils {
 
-    /**
-     * Method that gets called to a registered IResourceLoader when a file with the specified file extension is to be
-     * loaded
-     * @param f the file to be loaded
-     * @return the resource object which contains the necessary data
-     */
-    Resource load(File f);
+    private BufferUtils() {
+    }
+
+    public static ByteBuffer createByteBuffer(byte[] array) {
+        ByteBuffer result = ByteBuffer.allocateDirect(array.length).order(ByteOrder.nativeOrder());
+        result.put(array).flip();
+        return result;
+    }
+
+    public static FloatBuffer createFloatBuffer(float[] array) {
+        FloatBuffer result = ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        result.put(array).flip();
+        return result;
+    }
+
+    public static IntBuffer createIntBuffer(int[] array) {
+        IntBuffer result = ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asIntBuffer();
+        result.put(array).flip();
+        return result;
+    }
 
 }

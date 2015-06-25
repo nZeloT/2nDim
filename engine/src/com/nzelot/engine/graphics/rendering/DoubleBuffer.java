@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 nZeloT
@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- ******************************************************************************/
+ */
 
 package com.nzelot.engine.graphics.rendering;
 
@@ -52,10 +52,6 @@ public abstract class DoubleBuffer extends JPanel{
         repaint();
     }
 
-    private BufferedImage getFront() {
-        return swap ? buffer[0] : buffer[1];
-    }
-
     private BufferedImage getBack(){
         return !swap ? buffer[0] : buffer[1];
     }
@@ -81,5 +77,9 @@ public abstract class DoubleBuffer extends JPanel{
             buffer[idx] = new BufferedImage(getWidth(), getHeight(), buffer[0].getType());
             buffer[idx].getGraphics().drawImage(img, 0, 0, null);
         }
+    }
+
+    private BufferedImage getFront() {
+        return swap ? buffer[0] : buffer[1];
     }
 }
