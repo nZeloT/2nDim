@@ -34,9 +34,12 @@ import java.util.Vector;
  * The Entity Class represents the most basic Object within the whole Scenegraph.
  * It implements positioning and parent/child graph relations.
  *
+ * An Entity has no size or such. It only defines a point in space and moves according to its parents movements.
+ *
+ * the scenegraph will build up as tree structure
+ *
  * @author nZeloT
  */
-//TODO: add some doc
 public abstract class Entity {
 
     private static final Vector3f dummy = new Vector3f();
@@ -162,10 +165,18 @@ public abstract class Entity {
         return e;
     }
 
+    /**
+     * @param index the index of the child entity
+     * @return the child entity object
+     */
     public Entity getChild(int index) {
         return children.get(index);
     }
 
+    /**
+     * @param e the entity object to get the index from
+     * @return the index of the child entity
+     */
     public int indexOfChild(Entity e) {
         return children.indexOf(e);
     }
@@ -182,6 +193,9 @@ public abstract class Entity {
         children.clear();
     }
 
+    /**
+     * @return the position relative to the universe origin
+     */
     public Vector3f getAbsolutePosition() {
         if (changed) {
             Vector3f pp = Entity.dummy;
@@ -233,12 +247,20 @@ public abstract class Entity {
         moveChildren(delta);
     }
 
+    /**
+     * move all children according the parent entity (this one)
+     *
+     * @param delta the distance to move
+     */
     private void moveChildren(Vector3f delta) {
         for (int i = 0; i < children.size(); i++) {
             children.get(i).move(delta);
         }
     }
 
+    /**
+     * render the entity and all child entities afterwards
+     */
     public void renderAll() {
 
         this.render();
@@ -249,6 +271,10 @@ public abstract class Entity {
         }
     }
 
+    /**
+     * update the entity and afterwards update all child entities
+     * @param delta the delta time to update
+     */
     public void updateAll(double delta) {
 
         this.update(delta);

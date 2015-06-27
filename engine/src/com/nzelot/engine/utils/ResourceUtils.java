@@ -22,53 +22,45 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.game;
+package com.nzelot.engine.utils;
 
 import com.nzelot.engine.utils.logging.Logger;
 
+import java.io.*;
+
 /**
- * Start a game and provide a possibility to halt it without every game object having a reference to the game object.
+ * similar to <code>FileUtils</code> but using the <code>System.class.getResourceAsStream()</code> Method for reading the data instead of the <code>File</code> API
  *
  * @author nZeloT
  */
-public class Runtime {
+public class ResourceUtils {
 
-    private static final String CLASS_NAME = Runtime.class.getName();
-
-    private static final Runtime instance = new Runtime();
-    private Game game;
+    private static final String CLASS_NAME = ResourceUtils.class.getName();
 
     //prevent instantiation
-    private Runtime() {
+    private ResourceUtils() {
     }
 
-    /**
-     * Kick-off a <code>Game</code> in a new <code>Thread</code>
-     *
-     * @param game the <code>Game</code>-Object to launch
-     */
-    public static void runGame(Game game) {
-        if (instance.game == null) {
+    public static String loadAsString(String resourceName) {
 
-            instance.game = game;
+        StringBuilder result = new StringBuilder();
+        try {
 
-            // use a method reference lambda. looks weird :P
-            Thread gameThread = new Thread(game::run);
-            gameThread.start();
+            InputStream in = ResourceUtils.class.getClassLoader().getResourceAsStream(resourceName);
+            if (in == null) {
+                Logger.log(CLASS_NAME + ": Tried to read non existing resource: " + resourceName, Logger.LEVEL.ERROR);
+                throw new IllegalArgumentException("Tried to read non existing resource: " + resourceName);
+            }
 
-        } else {
-            Logger.log(CLASS_NAME + ": Tried to launch second game! This is currently not supported.", Logger.LEVEL.ERROR);
-            throw new IllegalStateException("Game already running!");
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String buffer;
+            while ((buffer = br.readLine()) != null)
+                result.append(buffer).append("\n");
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return result.toString();
     }
-
-    /**
-     * halt the started <code>Game</code>
-     */
-    public static void stopGame() {
-        if (instance.game != null)
-            instance.game.haltGameLoop();
-
-    }
-
 }

@@ -57,26 +57,7 @@ public interface Shape {
     boolean contains(Shape shape);
 
     /**
-     * join two shape to a new one
-     *
-     * @param shape the shape to join with
-     * @param mode  the join mode; Either the intersection or the united shape will be created
-     * @return the resulting shape
-     */
-    Shape join(Shape shape, JoinMode mode);
-
-    /**
      * @return an rectangular shaped bounding box
      */
     Vector3f[] getBoundingBox();
-
-    /**
-     * this describes the two possible join modes for a shape
-     */
-    enum JoinMode {
-
-        INTERSECTION,
-        UNION
-
-    }
 }

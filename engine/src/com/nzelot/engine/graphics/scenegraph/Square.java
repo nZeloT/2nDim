@@ -76,11 +76,6 @@ public class Square extends Entity {
         this.scale *= s;
     }
 
-    public void setScaling(float s) {
-        scaling.scaling(s, s, s);
-        this.scale = s;
-    }
-
     public float getRotation() {
         return angle;
     }
@@ -90,8 +85,13 @@ public class Square extends Entity {
         this.angle = angle;
     }
 
-    public float getScale() {
+    public float getScaling() {
         return scale;
+    }
+
+    public void setScaling(float s) {
+        scaling.scaling(s, s, s);
+        this.scale = s;
     }
 
     @Override

@@ -24,7 +24,6 @@
 
 package com.nzelot.engine.graphics.rendering;
 
-import com.nzelot.engine.utils.FileUtils;
 import com.nzelot.engine.utils.logging.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -60,7 +59,7 @@ public class Shader {
 
     // only visible within the package to prevent instantiation from outside the ShaderManager
     Shader(String vertex, String fragment) {
-        ID = ShaderUtils.load(vertex, fragment);
+        ID = ShaderUtils.create(vertex, fragment);
         locationCache = new HashMap<>();
         buffer = BufferUtils.createFloatBuffer(16);
     }
@@ -180,19 +179,6 @@ class ShaderUtils {
 
     //prevent instantiation
     private ShaderUtils() {
-    }
-
-    /**
-     * load a shader from files at the specified location
-     *
-     * @param vertPath path to the vertex shader
-     * @param fragPath path to the fragment shader
-     * @return the newly generated shader ID
-     */
-    public static int load(String vertPath, String fragPath) {
-        String vert = FileUtils.loadAsString(vertPath);
-        String frag = FileUtils.loadAsString(fragPath);
-        return create(vert, frag);
     }
 
     /**

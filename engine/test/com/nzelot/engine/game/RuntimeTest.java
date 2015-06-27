@@ -26,35 +26,34 @@ package com.nzelot.engine.game;
 
 import com.nzelot.engine.graphics.rendering.Color;
 import com.nzelot.engine.graphics.rendering.Texture;
-import com.nzelot.engine.graphics.scenegraph.ColoredSquare;
-import com.nzelot.engine.graphics.scenegraph.TexturedSquare;
-import com.nzelot.engine.graphics.scenegraph.Universe;
+import com.nzelot.engine.graphics.scenegraph.*;
 import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
 /**
- * some random playground to test features
+ * some random playground to test new features
  *
  * @author nZeloT
  */
 public class RuntimeTest {
 
     public static void main(String[] args) {
+
         Game g = new Game(1280, 720, false, "Test") {
 
             private TexturedSquare pic;
             private ColoredSquare col;
 
             @Override
-            protected void initGame() {
+            protected Entity initGame() {
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_DEPTH_TEST);
                 glActiveTexture(GL_TEXTURE1);
 
-                world = new Universe();
+                Universe universe = new Universe();
 
                 pic = new TexturedSquare(
                         new Vector3f(0, 0, 0),
@@ -65,9 +64,9 @@ public class RuntimeTest {
                         new Color(0.2f, 0.4f, 0.8f)
                 );
 
-                world.addChild(pic);
-                world.addChild(col);
-
+                universe.addChild(pic);
+                universe.addChild(col);
+                return universe;
             }
 
             @Override
@@ -86,6 +85,6 @@ public class RuntimeTest {
             }
         };
 
-        Runtime.get().runGame(g);
+        Runtime.runGame(g);
     }
 }

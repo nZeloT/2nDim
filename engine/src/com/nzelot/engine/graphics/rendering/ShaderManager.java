@@ -24,6 +24,8 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.utils.FileUtils;
+import com.nzelot.engine.utils.ResourceUtils;
 import com.nzelot.engine.utils.logging.Logger;
 
 import java.util.HashMap;
@@ -37,15 +39,8 @@ public class ShaderManager {
 
     private static final String CLASS_NAME = ShaderManager.class.getName();
 
-    //*************************************************
-    // standard enum
     private static Map<String, Shader> shaders;
 
-    // end enum standard
-    //*************************************************
-
-    //*************************************************
-    // access Methods
     private static boolean init;
 
     //prevent instantiation
@@ -62,9 +57,6 @@ public class ShaderManager {
     public static Shader getShader(STANDARD std) {
         return getShader(std.getKey());
     }
-
-    // end access methods
-    //*************************************************
 
     /**
      * Retrieve a <code>Shader</code>-Object identified with the given <code>key</code>.<br>
@@ -84,15 +76,44 @@ public class ShaderManager {
         return s;
     }
 
-    public static Shader loadShader(String key, String vertPath, String fragPath) {
+    /**
+     * load one of your own shaders.
+     *
+     * @param key      the key of the newly loaded shader
+     * @param vertPath the path to the vertex shader
+     * @param fragPath the path to the fragment shader
+     * @return the newly created shader object
+     * @implNote replacing a shader with another one is not supported
+     */
+    public static Shader loadShaderfromFile(String key, String vertPath, String fragPath) {
         if (shaders.containsKey(key)) {
             Logger.log(CLASS_NAME + ": Tried to load already existing shader with key: " + key, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to load already existing shader with key: " + key);
         }
 
-        Shader s = new Shader(vertPath, fragPath);
+        String vert = FileUtils.loadAsString(vertPath);
+        String frag = FileUtils.loadAsString(fragPath);
+        Shader s = new Shader(vert, frag);
 
         shaders.put(key, s);
+
+        return s;
+    }
+
+    /**
+     * replace one of the standard shader with your implementation to add extra features
+     *
+     * @param std      the standard shader to replace
+     * @param vertPath the path to the new vertex shader
+     * @param fragPath the path to the new fragment shader
+     * @return the new Standard Shader
+     */
+    public static Shader replaceStandardShader(STANDARD std, String vertPath, String fragPath) {
+        String vert = FileUtils.loadAsString(vertPath);
+        String frag = FileUtils.loadAsString(fragPath);
+        Shader s = new Shader(vert, frag);
+
+        shaders.put(std.getKey(), s);
 
         return s;
     }
@@ -111,7 +132,9 @@ public class ShaderManager {
 
             STANDARD[] standards = STANDARD.values();
             for (STANDARD standard : standards) {
-                s = new Shader(standard.getVertPath(), standard.getFragPath());
+                String vert = ResourceUtils.loadAsString(standard.getVertPath());
+                String frag = ResourceUtils.loadAsString(standard.getFragPath());
+                s = new Shader(vert, frag);
 
                 shaders.put(standard.getKey(), s);
             }
@@ -125,12 +148,14 @@ public class ShaderManager {
      */
     public enum STANDARD {
 
-        SQUARE("com.nzelot.engine.shader.standard.square", "engine/resources/shader/colSquare.vert", "engine/resources/shader/colSquare.frag"),
-        SQUARE_TEXTURE("com.nzelot.engine.shader.standard.square_tex", "engine/resources/shader/texSquare.vert", "engine/resources/shader/texSquare.frag");
+        SQUARE("com.nzelot.engine.shader.standard.square", "res/shader/colSquare.vert", "res/shader/colSquare.frag"),
+        SQUARE_TEXTURE("com.nzelot.engine.shader.standard.square_tex", "res/shader/texSquare.vert", "res/shader/texSquare.frag"),
+        CIRCLE("com.nzelot.engine.shader.standard.circle", "res/shader/texSquare.vert", "res/shader/colCircle.frag"),
+        CIRLCE_TEXTURE("com.nzelot.engine.shader.standard.circle_tex", "res/shader/texSquare.vert", "res/shader/texCircle.frag");
 
         private String key;
 
-        //TODO: this needs improvement. it is indeed very ugly and not dynamic at all!
+        //TODO: improved as they are included in the generated jar, but still not fine with the solution!
         private String vertPath;
         private String fragPath;
 

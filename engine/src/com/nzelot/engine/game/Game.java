@@ -31,15 +31,16 @@ import com.nzelot.engine.graphics.scenegraph.Entity;
 import com.nzelot.engine.utils.logging.Logger;
 
 /**
- * the base class for all games. it already provides a ready to go game loop. you only need to setup the scenegraph etc.
+ * The base class for a game. Engine initialization and so forth (i.e. all the boilerplate code) is done for you.<br>
+ *
+ * Just use the four methods: <code>initGame(), exitGame(), update(float delta), render()</code> to build your game logic.
  *
  * @author nZeloT
  */
-//TODO: add some more doc
 public abstract class Game {
 
-    protected Entity world;
-    protected Window window;
+    private Entity world;
+    private Window window;
     private boolean running;
     private int targetFPS;
 
@@ -49,11 +50,23 @@ public abstract class Game {
         this.window = new Window(windowTitle, width, height, fullscreen);
     }
 
-    public void run() throws RuntimeException {
+    /**
+     * Kick-off the game. Here starts the magic :)<br>
+     * <p>
+     * This just calls
+     * <code><ul>
+     * <li>initEngine()</li>
+     * <li>initGame()</li>
+     * <li>enterGameLoop()</li>
+     * <li>endGame()</li>
+     * <li>endEngine()</li>
+     * </ul></code> in exact that order.
+     */
+    void run() {
         if (!running) {
             initEngine();
 
-            initGame();
+            world = initGame();
 
             if (world == null) {
                 Logger.log("No Scene Graph defined!", Logger.LEVEL.ERROR);
@@ -69,9 +82,9 @@ public abstract class Game {
     }
 
     /**
-     * init the rendering platform and set up required stuff
+     * init the rendering platform and set up required stuff. i.e. create the window and initialize the different managers.
      */
-    private void initEngine() throws RuntimeException {
+    private void initEngine() {
         if (!window.init()) {
             Logger.log("Could not init Engine!", Logger.LEVEL.ERROR);
             throw new RuntimeException("Could not Initialize Engine!");
@@ -82,10 +95,17 @@ public abstract class Game {
     }
 
     /**
-     * called before the game loop actually starts. Use this method to set up your scenegraph etc.
+     * this is called after <code>initEngine()</code> has set up the engine to start going.<br>
+     * use it to setup your scenegraph and prepare for the game loop.
+     *
+     * @return the root object of the scenegraph. e.g. an instance of <code>Universe</code>
      */
-    protected abstract void initGame();
+    protected abstract Entity initGame();
 
+    /**
+     * the real game loop. calls <code>update()</code> and <code>render()</code> every frame.
+     * it also checks for window close requests
+     */
     private void enterGameLoop(){
 
         long lastTime = System.nanoTime();
@@ -126,18 +146,28 @@ public abstract class Game {
     }
 
     /**
-     * called after the game loop has ended. Use it to e.g. save the game state etc.
+     * called after the game loop has ended. Use it to e.g. save the game state and free self allocated data
      */
     protected abstract void endGame();
 
     /**
      * shutdown the rendering platform and tear down required stuff
      */
-    public void endEngine() {
+    private void endEngine() {
         this.window.exit();
     }
 
-    private void update(double delta) {
+    /**
+     * update the scenegraph the specified amount of time.<br>
+     * this calls:
+     * <code><ul>
+     *     <li>Window.updateInput()</li>
+     *     <li>updateGame(delta)</li>
+     *     <li>SceneGraph.updateAll(delta)</li>
+     * </ul></code> in exactly this order.
+     * @param delta the amount of time to update
+     */
+    protected void update(double delta) {
 
         window.updateInput();
 
@@ -146,7 +176,17 @@ public abstract class Game {
 
     }
 
-    private void render(){
+    /**
+     * render the current game state to the screen.
+     * it calls:
+     * <code><ul>
+     *     <li>Window.clear()</li>
+     *     <li>renderGame()</li>
+     *     <li>SceneGraph.renderAll()</li>
+     *     <li>Window.update()</li>
+     * </ul></code> in that order.
+     */
+    protected void render() {
 
         window.clear();
 
@@ -156,12 +196,38 @@ public abstract class Game {
         window.update();
     }
 
+    /**
+     * update the game
+     * @param delta the delta time to update
+     */
     protected abstract void updateGame(double delta);
 
+    /**
+     * prepare for rendering of the scene graph
+     */
     protected abstract void renderGame();
 
-    public void haltGameLoop() {
+    /**
+     * halt the game immediately
+     */
+    void haltGameLoop() {
         this.running = false;
     }
 
+    /**
+     * provides access to the Window
+     * @return the actual <code>Window</code> Object
+     */
+    public Window getWindow() {
+        return window;
+    }
+
+    /**
+     * provides access to the scene graph / world root
+     *
+     * @return the scene graph / world root node
+     */
+    public Entity getWorld() {
+        return world;
+    }
 }
