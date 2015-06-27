@@ -24,26 +24,41 @@
 
 package com.nzelot.engine.utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import com.nzelot.engine.utils.logging.Logger;
+
+import java.io.*;
 
 /**
  * taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
+ * <p>
+ * added some improvements
+ *
+ * @author TheCherno
+ * @author nZeloT
  */
+//TODO: add some doc
 public class FileUtils {
 
+    private static final String CLASS_NAME = FileUtils.class.getName();
+
+    //prevent instantiation
     private FileUtils() {
     }
 
     public static String loadAsString(String file) {
 
+        //Does file exist?
+        if (!new File(file).exists()) {
+            Logger.log(CLASS_NAME + ": Tried to read non existing file: " + file, Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to read non existing file: " + file);
+        }
+
         StringBuilder result = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-            String buffer = br.readLine();
+            String buffer;
             while ((buffer = br.readLine()) != null)
-                result.append(buffer + "\n");
+                result.append(buffer).append("\n");
             br.close();
         } catch (IOException e) {
             e.printStackTrace();

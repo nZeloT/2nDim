@@ -22,27 +22,35 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.graphics.scenegraph;
+
+import com.nzelot.engine.graphics.rendering.Shader;
+import com.nzelot.engine.graphics.rendering.Texture;
+import com.nzelot.engine.graphics.rendering.VertexArray;
+import org.joml.Vector3f;
 
 /**
- * A single loaded resource of type T
- * @param <T> the resource type
+ * Dummy Entity to use as root entity within the scene graph.
  *
  * @author nZeloT
+ * @implNote the <code>render()</code>-Method calls the <code>unbind()</code>-Methods of
+ * <code>VertexArray, Texture</code> and <code>Shader</code>
  */
-//fixme: still needed
-public class Resource<T> {
+public class Universe extends Entity {
 
-    private final T data;
-
-    public Resource(T data) {
-        this.data = data;
+    public Universe() {
+        super(new Vector3f());
     }
 
-    /**
-     * @return the data stored within the resource
-     */
-    public T getData() {
-        return data;
+    @Override
+    public void update(double delta) {
+        //NOP
+    }
+
+    @Override
+    public void render() {
+        VertexArray.unbind();
+        Texture.unbind();
+        Shader.unbind();
     }
 }

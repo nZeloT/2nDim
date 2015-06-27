@@ -22,27 +22,30 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.graphics.scenegraph;
+
+import com.nzelot.engine.graphics.rendering.ShaderManager;
+import com.nzelot.engine.graphics.rendering.Texture;
+import org.joml.Vector3f;
 
 /**
- * A single loaded resource of type T
- * @param <T> the resource type
- *
  * @author nZeloT
  */
-//fixme: still needed
-public class Resource<T> {
+//TODO: add some doc
+public class TexturedSquare extends Square {
 
-    private final T data;
+    private Texture texture;
 
-    public Resource(T data) {
-        this.data = data;
+    public TexturedSquare(Vector3f pos, Texture tex) {
+        super(pos, ShaderManager.STANDARD.SQUARE_TEXTURE);
+
+        this.texture = tex;
+        this.shader.setUniform1i("tex", 1);
     }
 
-    /**
-     * @return the data stored within the resource
-     */
-    public T getData() {
-        return data;
+    @Override
+    public void render() {
+        texture.bind();
+        super.render();
     }
 }

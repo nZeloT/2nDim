@@ -33,6 +33,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * taken from https://github.com/TheCherno/Flappy/blob/master/src/com/thecherno/flappy/graphics/VertexArray.java
+ *
+ * @author TheCherno
  */
 public class VertexArray {
 
@@ -82,7 +84,7 @@ public class VertexArray {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     }
 
-    public void draw() {
+    public void render() {
         if (ibo > 0)
             glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_BYTE, 0);
         else

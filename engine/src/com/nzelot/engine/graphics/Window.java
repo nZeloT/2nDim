@@ -26,16 +26,25 @@ package com.nzelot.engine.graphics;
 
 import com.nzelot.engine.utils.logging.Logger;
 import org.joml.Vector2f;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GLContext;
+
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+/**
+ * A wrapper class handling all the glfw stuff. Including all the callbacks.
+ * <p>
+ * <p>
+ * Initial Version taken from: https://github.com/TheCherno/Sparky/blob/master/Sparky-core/src/graphics/window.cpp<br>
+ * and transferred to Java along with some modifications
+ *
+ * @author TheCherno
+ * @author nZeloT
+ */
 public class Window {
 
     private static final int KEY_COUNT = 1024;
@@ -44,6 +53,7 @@ public class Window {
     private final String title;
     private int width, height;
     private long windowID;
+    private boolean fullscreen;
 
     private boolean keys[];
     private boolean keyState[];
@@ -53,6 +63,7 @@ public class Window {
     private boolean mouseClicked[];
 
     private Vector2f mousePosition;
+
     private GLFWFramebufferSizeCallback windowResize = new GLFWFramebufferSizeCallback() {
         @Override
         public void invoke(long window, int w, int h) {
@@ -81,13 +92,12 @@ public class Window {
         }
     };
 
-    public Window(String title, int width, int height) {
+    public Window(String title, int width, int height, boolean fullscreen) {
         this.title = title;
         this.width = width;
         this.height = height;
-
-        if (!init())
-            glfwTerminate();
+        this.fullscreen = fullscreen;
+        this.windowID = -1;
 
         this.keys = new boolean[KEY_COUNT];
         this.keyState = new boolean[KEY_COUNT];
@@ -100,35 +110,68 @@ public class Window {
         this.mousePosition = new Vector2f();
     }
 
-    private boolean init() {
+    public boolean init() {
         if (glfwInit() != GL_TRUE) {
-            Logger.log("Could not initialize GLFW!", Logger.LEVEL.ERROR);
+            Logger.log("Could not initGame GLFW!", Logger.LEVEL.ERROR);
+            glfwTerminate();
             return false;
         }
 
-        this.windowID = glfwCreateWindow(width, height, title, NULL, NULL);
+        if (!setUpWindow()) {
+            glfwTerminate();
+            return false;
+        }
+
+        Logger.log("OpenGL Version: " + glGetString(GL_VERSION));
+
+        return true;
+    }
+
+    private boolean setUpWindow() {
+        // Create new window
+        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+        if (fullscreen) {
+            width = GLFWvidmode.width(vidMode);
+            height = GLFWvidmode.height(vidMode);
+        }
+
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+        long monitor = fullscreen ? glfwGetPrimaryMonitor() : NULL;
+        long grabContext = windowID == -1 ? NULL : windowID;
+        long newWindowID = glfwCreateWindow(width, height, title, monitor, grabContext);
 
         if (windowID == NULL) {
             Logger.log("Could not create Window!", Logger.LEVEL.ERROR);
             return false;
         }
 
-        glfwMakeContextCurrent(this.windowID);
+        if (windowID > -1)
+            glfwDestroyWindow(windowID);
+        windowID = newWindowID;
+
+        glfwMakeContextCurrent(windowID);
+        glfwSwapInterval(1);
+
+        setUpCallbacks();
+
+        GLContext.createFromCurrent();
+
+        if (!fullscreen) {
+            glfwSetWindowPos(windowID, (GLFWvidmode.width(vidMode) - width) / 2, (GLFWvidmode.height(vidMode) - height) / 2);
+        }
+
+        glfwShowWindow(windowID);
+
+        return true;
+    }
+
+    private void setUpCallbacks() {
         glfwSetFramebufferSizeCallback(this.windowID, windowResize);
         glfwSetKeyCallback(this.windowID, keyCallback);
         glfwSetMouseButtonCallback(this.windowID, mouseButtonCallback);
         glfwSetCursorPosCallback(this.windowID, cursorPosCallback);
-
-        glfwSwapInterval(1);
-
-        GLContext.createFromCurrent();
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        Logger.log("OpenGL Version: " + glGetString(GL_VERSION));
-
-        return true;
     }
 
     public void clear() {
@@ -142,10 +185,11 @@ public class Window {
         }
 
         glfwSwapBuffers(this.windowID);
-        glfwPollEvents();
     }
 
     public void updateInput() {
+        glfwPollEvents();
+
         for (int i = 0; i < KEY_COUNT; i++)
             keyTyped[i] = keys[i] && !keyState[i];
 

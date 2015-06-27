@@ -24,97 +24,67 @@
 
 package com.nzelot.engine.game;
 
+import com.nzelot.engine.graphics.Window;
+import com.nzelot.engine.graphics.rendering.ShaderManager;
+import com.nzelot.engine.graphics.rendering.VertexArrayManager;
 import com.nzelot.engine.graphics.scenegraph.Entity;
-import com.nzelot.engine.input.InputHandler;
-import org.lwjgl.glfw.GLFWvidmode;
-import org.lwjgl.opengl.GLContext;
-
-import java.nio.ByteBuffer;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import com.nzelot.engine.utils.logging.Logger;
 
 /**
  * the base class for all games. it already provides a ready to go game loop. you only need to setup the scenegraph etc.
+ *
+ * @author nZeloT
  */
-//TODO: adapt to the new window class
+//TODO: add some more doc
 public abstract class Game {
 
-    protected Entity sceneGraph;
-
+    protected Entity world;
+    protected Window window;
     private boolean running;
-
     private int targetFPS;
-
-    private int width, oldWidth;
-    private int height, oldHeight;
-    private boolean fullscreen;
-
-    private String windowTitle;
-    private long windowID;
 
     public Game(int width, int height, boolean fullscreen, String windowTitle) {
         this.running    = false;
         this.targetFPS  = 60;
-        this.width = width;
-        this.height = height;
-        this.fullscreen = fullscreen;
-        this.windowTitle = windowTitle;
+        this.window = new Window(windowTitle, width, height, fullscreen);
     }
 
     public void run() throws RuntimeException {
         if (!running) {
-            initializeRenderer();
+            initEngine();
 
-            initialize();
+            initGame();
 
-            if (sceneGraph == null)
+            if (world == null) {
+                Logger.log("No Scene Graph defined!", Logger.LEVEL.ERROR);
                 throw new IllegalStateException("No Scene Graph defined!");
+            }
 
             enterGameLoop();
 
-            shutdown();
+            endGame();
 
-            shutdownRenderer();
+            endEngine();
         }
     }
 
     /**
-     * initialize the rendering platform and set up required stuff
-     *
+     * init the rendering platform and set up required stuff
      */
-    private void initializeRenderer() throws RuntimeException {
-        if (glfwInit() != GL_TRUE) throw new RuntimeException("Could not Initialize GLFW!");
+    private void initEngine() throws RuntimeException {
+        if (!window.init()) {
+            Logger.log("Could not init Engine!", Logger.LEVEL.ERROR);
+            throw new RuntimeException("Could not Initialize Engine!");
+        }
 
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-        this.windowID = glfwCreateWindow(width, height, windowTitle, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
-
-        if (windowID == NULL) throw new RuntimeException("Could not create Window!");
-
-        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(windowID, (GLFWvidmode.width(vidMode) - width) / 2, (GLFWvidmode.height(vidMode) - height) / 2);
-
-        glfwSetKeyCallback(windowID, new InputHandler(windowID));
-
-        glfwMakeContextCurrent(windowID);
-        glfwShowWindow(windowID);
-        glfwSwapInterval(1);
-
-        GLContext.createFromCurrent();
-
-        glEnable(GL_DEPTH_TEST);
-        glActiveTexture(GL_TEXTURE1);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+        VertexArrayManager.init();
+        ShaderManager.init();
     }
 
     /**
      * called before the game loop actually starts. Use this method to set up your scenegraph etc.
      */
-    protected abstract void initialize();
+    protected abstract void initGame();
 
     private void enterGameLoop(){
 
@@ -144,12 +114,12 @@ public abstract class Game {
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println(updates + " ups " + frames + " fps");
+                Logger.log(updates + " ups " + frames + " fps");
                 updates = 0;
                 frames = 0;
             }
 
-            if (glfwWindowShouldClose(windowID) == GL_TRUE)
+            if (window.closed())
                 running = false;
         }
 
@@ -158,94 +128,40 @@ public abstract class Game {
     /**
      * called after the game loop has ended. Use it to e.g. save the game state etc.
      */
-    protected abstract void shutdown();
+    protected abstract void endGame();
 
     /**
      * shutdown the rendering platform and tear down required stuff
      */
-    public void shutdownRenderer() {
-        //TODO: free remaining resources
-
-        glfwDestroyWindow(windowID);
-        glfwTerminate();
-
+    public void endEngine() {
+        this.window.exit();
     }
 
     private void update(double delta) {
 
-        glfwPollEvents();
-        sceneGraph.updateAll(delta);
+        window.updateInput();
+
+        updateGame(delta);
+        world.updateAll(delta);
 
     }
 
     private void render(){
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        sceneGraph.renderAll();
+        window.clear();
 
-        //Print occurring errors
-        int error = glGetError();
-        if (error != GL_NO_ERROR) {
-            System.err.println(error);
-        }
+        renderGame();
+        world.renderAll();
 
-        glfwSwapBuffers(windowID);
-
+        window.update();
     }
+
+    protected abstract void updateGame(double delta);
+
+    protected abstract void renderGame();
 
     public void haltGameLoop() {
         this.running = false;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public boolean isFullscreen() {
-        return fullscreen;
-    }
-
-    public void toggleFullScreen() {
-
-        this.fullscreen = !this.fullscreen;
-
-        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        if (fullscreen) {
-
-            oldWidth = width;
-            oldHeight = height;
-
-            width = GLFWvidmode.width(vidMode);
-            height = GLFWvidmode.height(vidMode);
-
-        } else {
-            width = oldWidth;
-            height = oldHeight;
-        }
-
-        // Create new window
-        long newWindowID = glfwCreateWindow(width, height, windowTitle, fullscreen ? glfwGetPrimaryMonitor() : NULL, windowID);
-        glfwDestroyWindow(windowID);
-        windowID = newWindowID;
-
-        glfwSetKeyCallback(windowID, new InputHandler(windowID));
-
-        glfwMakeContextCurrent(windowID);
-        glfwSwapInterval(1);
-
-        GLContext.createFromCurrent();
-
-        glEnable(GL_DEPTH_TEST);
-        glActiveTexture(GL_TEXTURE1);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glfwSetWindowPos(windowID, (GLFWvidmode.width(vidMode) - width) / 2, (GLFWvidmode.height(vidMode) - height) / 2);
-
-        glfwShowWindow(windowID);
-    }
 }

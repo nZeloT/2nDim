@@ -33,7 +33,10 @@ import java.util.Vector;
 /**
  * The Entity Class represents the most basic Object within the whole Scenegraph.
  * It implements positioning and parent/child graph relations.
+ *
+ * @author nZeloT
  */
+//TODO: add some doc
 public abstract class Entity {
 
     private static final Vector3f dummy = new Vector3f();
@@ -46,26 +49,16 @@ public abstract class Entity {
 
 
     /**
-     * A basic Constructor. Leaving the parent field as null.
+     * the constructor
      *
-     * @param position the initial Position of the new Entity. Be Aware that the positioning mode is ABSOLUTE at the beginning.
+     * @param pos the initial position
      */
-    public Entity(Vector3f position) {
-        this(position, null);
-    }
-
-    /**
-     * An alternative Constructor, which also allows you to set the parent field.
-     *
-     * @param pos the initial position, relative to the parent. positioning mode will be set to RELATIVE at the beginning.
-     * @param parent the parent Entity
-     */
-    public Entity(Vector3f pos, Entity parent) {
+    public Entity(Vector3f pos) {
 
         this.position = new Vector3f(pos);
-        this.absolutePosition = new Vector3f();
+        this.absolutePosition = new Vector3f(pos);
 
-        this.parent = parent;
+        this.parent = null;
 
         this.children = new Vector<>();
 

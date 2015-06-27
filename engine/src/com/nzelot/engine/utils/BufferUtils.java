@@ -24,14 +24,14 @@
 
 package com.nzelot.engine.utils;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 /**
- * taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
+ * initially taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
+ *
+ * @author TheCherno
  */
+//TODO: add some doc
 public class BufferUtils {
 
     private BufferUtils() {

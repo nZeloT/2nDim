@@ -22,27 +22,65 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.resources;
+package com.nzelot.engine.graphics.rendering;
+
+import org.joml.Vector4f;
+
+//TODO: add some doc
 
 /**
- * A single loaded resource of type T
- * @param <T> the resource type
- *
  * @author nZeloT
  */
-//fixme: still needed
-public class Resource<T> {
+public class Color {
 
-    private final T data;
+    public Vector4f color;
 
-    public Resource(T data) {
-        this.data = data;
+    public Color(Vector4f color) {
+        this.color = color;
     }
 
-    /**
-     * @return the data stored within the resource
-     */
-    public T getData() {
-        return data;
+    public Color(float r, float g, float b, float a) {
+        this.color = new Vector4f(r, g, b, a);
     }
+
+    public Color(float r, float g, float b) {
+        this.color = new Vector4f(r, g, b, 1.0f);
+    }
+
+    public Vector4f asVector4f() {
+        return color;
+    }
+
+    public float getRed() {
+        return color.x;
+    }
+
+    public void setRed(float r) {
+        color.x = r;
+    }
+
+    public float getGreen() {
+        return color.y;
+    }
+
+    public void setGreen(float g) {
+        color.x = g;
+    }
+
+    public float getBlue() {
+        return color.z;
+    }
+
+    public void setBlue(float b) {
+        color.x = b;
+    }
+
+    public float getAlpha() {
+        return color.w;
+    }
+
+    public void setAlpha(float a) {
+        color.x = a;
+    }
+
 }

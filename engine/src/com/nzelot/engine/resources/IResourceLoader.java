@@ -26,6 +26,10 @@ package com.nzelot.engine.resources;
 
 import java.io.File;
 
+/**
+ * @author nZeloT
+ */
+//fixme: still needed?
 public interface IResourceLoader {
 
     /**

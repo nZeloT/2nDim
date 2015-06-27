@@ -24,6 +24,12 @@
 
 package com.nzelot.engine.utils.logging;
 
+/**
+ * Default Logger Implementation directing log entries to <code>System.out</code> or <code>System.err</code>
+ *
+ * @author nZeloT
+ */
+//TODO: add some doc
 public class DefaultLogger extends Logger {
 
     @Override

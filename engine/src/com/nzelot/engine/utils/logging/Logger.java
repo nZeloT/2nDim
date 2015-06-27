@@ -24,6 +24,12 @@
 
 package com.nzelot.engine.utils.logging;
 
+/**
+ * The Logging System. made accessible through <code>static</code>-Methods. To change the output set a new <code>currentLogger</code>.
+ *
+ * @author nZeloT
+ */
+//TODO: add some doc
 public abstract class Logger {
 
     private static LEVEL currentOutputLevel;

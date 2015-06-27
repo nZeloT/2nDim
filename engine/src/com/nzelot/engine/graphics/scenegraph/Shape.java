@@ -27,6 +27,9 @@ package com.nzelot.engine.graphics.scenegraph;
 
 import org.joml.Vector3f;
 
+/**
+ * @author nZeloT
+ */
 public interface Shape {
 
     /**

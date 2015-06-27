@@ -24,15 +24,22 @@
 
 package com.nzelot.engine.game;
 
+import com.nzelot.engine.utils.logging.Logger;
+
 /**
  * used to start a game. provides a possibility to stop the game due to the singleton implementation
+ *
+ * @author nZeloT
  */
+//TODO: add some more doc
 public class Runtime {
+
+    private static final String CLASS_NAME = Runtime.class.getName();
 
     private static final Runtime instance = new Runtime();
     private Game game;
-    private Thread gameThread;
 
+    //prevent instantiation
     private Runtime() {
     }
 
@@ -46,17 +53,14 @@ public class Runtime {
 
             this.game = game;
 
-            this.gameThread = new Thread(() -> {
-                try {
-                    game.run();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                }
-            });
+            // use a method reference lambda. looks weird :P
+            Thread gameThread = new Thread(game::run);
 
-            this.gameThread.start();
-        } else
+            gameThread.start();
+        } else {
+            Logger.log(CLASS_NAME + ": Tried to launch second game! This is currently not supported.", Logger.LEVEL.ERROR);
             throw new IllegalStateException("Game already running!");
+        }
     }
 
     public void stopGame() {

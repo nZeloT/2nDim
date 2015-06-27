@@ -24,14 +24,19 @@
 
 package com.nzelot.engine.resources;
 
+import com.nzelot.engine.utils.logging.Logger;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A simple Resource Manager with some basic features
+ *
+ * @author nZeloT
  */
 //TODO: rework
+//fixme: still necessary?
 public class ResourceManager {
 
     private static final ResourceManager instance = new ResourceManager();
@@ -108,7 +113,7 @@ public class ResourceManager {
                     if (r != null) {
                         resourceMap.put(prefix + f.getName().substring(0, i), r);
 
-                        System.out.println(prefix + f.getName().substring(0, i));
+                        Logger.log(prefix + f.getName().substring(0, i), Logger.LEVEL.DEBUG);
                     }
                 }
             }

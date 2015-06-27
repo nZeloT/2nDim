@@ -33,8 +33,11 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * a Texture. as it should be handed from the rendering platform
+ * holds a OpenGL Texture
+ *
+ * @author nZeloT
  */
+//TODO: add some doc
 public class Texture {
 
     private static int enabled;

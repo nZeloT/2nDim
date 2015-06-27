@@ -22,33 +22,29 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.input;
+package com.nzelot.engine.graphics.scenegraph;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
+import com.nzelot.engine.graphics.rendering.Color;
+import com.nzelot.engine.graphics.rendering.ShaderManager;
+import org.joml.Vector3f;
 
-import static org.lwjgl.glfw.GLFW.*;
+/**
+ * @author nZeloT
+ */
+//TODO: add some doc
+public class ColoredSquare extends Square {
 
-public class InputHandler extends GLFWKeyCallback {
+    private Color color;
 
-    private static boolean keys[];
-    private long windowID;
+    public ColoredSquare(Vector3f pos, Color color) {
+        super(pos, ShaderManager.STANDARD.SQUARE);
 
-    public InputHandler(long window) {
-        keys = new boolean[65536];
-        windowID = window;
-    }
-
-    public static boolean isKeyDown(int key) {
-        return InputHandler.keys[key];
+        this.color = color;
     }
 
     @Override
-    public void invoke(long window, int key, int scancode, int action, int mods) {
-
-        if (window == this.windowID) {
-            InputHandler.keys[key] = action != GLFW_RELEASE;
-        }
-
+    public void render() {
+        shader.setUniform4f("col", color.asVector4f());
+        super.render();
     }
-
 }
