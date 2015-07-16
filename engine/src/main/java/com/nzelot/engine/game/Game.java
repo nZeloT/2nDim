@@ -28,6 +28,7 @@ import com.nzelot.engine.graphics.Window;
 import com.nzelot.engine.graphics.rendering.ShaderManager;
 import com.nzelot.engine.graphics.rendering.VertexArrayManager;
 import com.nzelot.engine.graphics.scenegraph.Universe;
+import com.nzelot.engine.utils.SharedLibraryLoader;
 import com.nzelot.engine.utils.logging.Logger;
 
 /**
@@ -90,6 +91,9 @@ public abstract class Game {
      * init the rendering platform and set up required stuff. i.e. create the window and initialize the different managers.
      */
     private void initEngine() {
+        System.out.println("Calling Shared Lib loader ...");
+        SharedLibraryLoader.load();
+
         if (!window.init()) {
             Logger.log(CLASS_NAME + ": Could not init Engine!", Logger.LEVEL.ERROR);
             throw new RuntimeException(CLASS_NAME + ": Could not Initialize Engine!");

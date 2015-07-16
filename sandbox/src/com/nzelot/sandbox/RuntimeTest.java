@@ -107,7 +107,6 @@ public class RuntimeTest {
                 red.setAngularVelocity(-100*STEP);
 
 
-                qubes = new Vector<>(10);
                 for (int i = 0; i < 10; i++) {
                     PhysicalRectangle o = new PhysicalRectangle("Q" + i, 0.5,0.5, new Color(0.4f,0.4f,0.4f));
                     universe.addObject(o);

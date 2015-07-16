@@ -85,7 +85,7 @@ public abstract class PhysicalObject extends Object{
         transMat.identity();
 
         mR.identity();
-        mR.rotateZ((float) Math.toDegrees(transform.getRotation()));
+        mR.rotateZ((float) transform.getRotation());
 
         mT.identity();
         mT.translate((float) transform.getTranslationX(), (float) transform.getTranslationY(), 0);

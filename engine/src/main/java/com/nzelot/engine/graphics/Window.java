@@ -65,33 +65,10 @@ public class Window {
 
     private @Getter Vector2f mousePosition;
 
-    private GLFWFramebufferSizeCallback windowResize = new GLFWFramebufferSizeCallback() {
-        @Override
-        public void invoke(long window, int w, int h) {
-            glViewport(0, 0, w, h);
-            width = w;
-            height = h;
-        }
-    };
-    private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
-        @Override
-        public void invoke(long window, int key, int scancode, int action, int mods) {
-            keys[key] = action != GLFW_RELEASE;
-        }
-    };
-    private GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
-        @Override
-        public void invoke(long window, int button, int action, int mods) {
-            mouseBtn[button] = action != GLFW_RELEASE;
-        }
-    };
-    private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
-        @Override
-        public void invoke(long window, double xpos, double ypos) {
-            mousePosition.x = (float) xpos;
-            mousePosition.y = (float) ypos;
-        }
-    };
+    private GLFWFramebufferSizeCallback windowResize;
+    private GLFWKeyCallback keyCallback;
+    private GLFWMouseButtonCallback mouseButtonCallback;
+    private GLFWCursorPosCallback cursorPosCallback;
 
     public Window(String title, int width, int height, boolean fullscreen) {
         this.title = title;
@@ -169,6 +146,37 @@ public class Window {
     }
 
     private void setUpCallbacks() {
+        windowResize = new GLFWFramebufferSizeCallback() {
+            @Override
+            public void invoke(long window, int w, int h) {
+                glViewport(0, 0, w, h);
+                width = w;
+                height = h;
+            }
+        };
+
+        keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                keys[key] = action != GLFW_RELEASE;
+            }
+        };
+
+        mouseButtonCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                mouseBtn[button] = action != GLFW_RELEASE;
+            }
+        };
+
+        cursorPosCallback = new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+                mousePosition.x = (float) xpos;
+                mousePosition.y = (float) ypos;
+            }
+        };
+
         glfwSetFramebufferSizeCallback(this.windowID, windowResize);
         glfwSetKeyCallback(this.windowID, keyCallback);
         glfwSetMouseButtonCallback(this.windowID, mouseButtonCallback);
