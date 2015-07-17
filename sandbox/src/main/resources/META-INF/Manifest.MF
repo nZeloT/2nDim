@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: nZeloT
+Name: sandbox
+Class-Path: engine.jar dyn4j.jar joml.jar lwjgl.jar lwjgl-platform.jar

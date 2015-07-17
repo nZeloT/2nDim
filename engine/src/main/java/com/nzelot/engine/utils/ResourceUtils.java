@@ -25,6 +25,7 @@
 package com.nzelot.engine.utils;
 
 import com.nzelot.engine.utils.logging.Logger;
+import lombok.NonNull;
 
 import java.io.*;
 
@@ -57,7 +58,7 @@ public class ResourceUtils {
         return in;
     }
 
-    public static String readIntoString(Reader in) {
+    public static String readIntoString(@NonNull Reader in) {
         StringBuilder result = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(in);

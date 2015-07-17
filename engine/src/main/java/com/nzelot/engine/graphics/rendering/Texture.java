@@ -24,8 +24,8 @@
 
 package com.nzelot.engine.graphics.rendering;
 
-import com.nzelot.engine.utils.PNGDecoder;
 import lombok.Getter;
+import third.party.PNGDecoder;
 
 import java.io.FileInputStream;
 import java.io.IOException;

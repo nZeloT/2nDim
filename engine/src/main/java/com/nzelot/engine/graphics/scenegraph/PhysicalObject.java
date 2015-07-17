@@ -25,6 +25,7 @@
 package com.nzelot.engine.graphics.scenegraph;
 
 import com.nzelot.engine.utils.Constants;
+import lombok.NonNull;
 import lombok.experimental.Delegate;
 import org.dyn4j.dynamics.*;
 import org.dyn4j.dynamics.joint.WeldJoint;
@@ -65,7 +66,7 @@ public abstract class PhysicalObject extends Object{
     }
 
     @Override
-    public void setTranslation(Vector2 pos) {
+    public void setTranslation(@NonNull Vector2 pos) {
         physicalBody.getTransform().setTranslation(pos);
     }
 
@@ -101,7 +102,7 @@ public abstract class PhysicalObject extends Object{
         physicalBody.rotateAboutCenter(rad);
     }
 
-    public void addWeldJoint(PhysicalObject target, Vector2 anchor){
+    public void addWeldJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
             w.addJoint(new WeldJoint(physicalBody, target.getBody(), anchor));
@@ -116,25 +117,25 @@ public abstract class PhysicalObject extends Object{
         return physicalBody;
     }
 
-    protected BodyFixture addFixture(Convex convex) {
+    protected BodyFixture addFixture(@NonNull Convex convex) {
         BodyFixture fix =  physicalBody.addFixture(convex);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
-    protected BodyFixture addFixture(Convex convex, double density) {
+    protected BodyFixture addFixture(@NonNull Convex convex, double density) {
         BodyFixture fix = physicalBody.addFixture(convex, density);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
-    protected BodyFixture addFixture(Convex convex, double density, double friction, double restitution) {
+    protected BodyFixture addFixture(@NonNull Convex convex, double density, double friction, double restitution) {
         BodyFixture fix =  physicalBody.addFixture(convex, density, friction, restitution);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
-    protected Body addFixture(BodyFixture fixture) {
+    protected Body addFixture(@NonNull BodyFixture fixture) {
         Body b = physicalBody.addFixture(fixture);
         aabb = physicalBody.createAABB();
         return b;

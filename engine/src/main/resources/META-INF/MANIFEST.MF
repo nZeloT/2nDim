@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: dyn4j.jar joml.jar lwjgl.jar
-Created-By: nZeloT
-Name: engine
-
-

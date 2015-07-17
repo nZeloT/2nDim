@@ -28,8 +28,8 @@ import com.nzelot.engine.graphics.Window;
 import com.nzelot.engine.graphics.rendering.ShaderManager;
 import com.nzelot.engine.graphics.rendering.VertexArrayManager;
 import com.nzelot.engine.graphics.scenegraph.Universe;
-import com.nzelot.engine.utils.SharedLibraryLoader;
 import com.nzelot.engine.utils.logging.Logger;
+import third.party.SharedLibraryLoader;
 
 /**
  * The base class for a game. Engine initialization and so forth (i.e. all the boilerplate code) is done for you.<br>
@@ -91,7 +91,6 @@ public abstract class Game {
      * init the rendering platform and set up required stuff. i.e. create the window and initialize the different managers.
      */
     private void initEngine() {
-        System.out.println("Calling Shared Lib loader ...");
         SharedLibraryLoader.load();
 
         if (!window.init()) {

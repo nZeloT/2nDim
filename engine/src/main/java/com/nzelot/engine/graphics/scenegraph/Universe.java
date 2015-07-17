@@ -28,6 +28,7 @@ import com.nzelot.engine.graphics.rendering.Shader;
 import com.nzelot.engine.graphics.rendering.Texture;
 import com.nzelot.engine.graphics.rendering.VertexArray;
 import lombok.Getter;
+import lombok.NonNull;
 import org.dyn4j.dynamics.World;
 import org.joml.Matrix4f;
 
@@ -53,7 +54,7 @@ public class Universe {
     private boolean reorderObjects;
 
     //todo add doc
-    public Universe(Matrix4f projMat) {
+    public Universe(@NonNull Matrix4f projMat) {
         this.projMat = projMat;
         gameObjects = new Vector<>(32);
 
@@ -93,10 +94,7 @@ public class Universe {
     }
 
     //todo add doc
-    public void addObject(Object object){
-        if(object == null)
-            throw new NullPointerException(CLASS_NAME + ": Add \"null\" to the World is not permitted!");
-
+    public void addObject(@NonNull Object object){
         gameObjects.add(object);
         object.setUniverse(this);
         if(object instanceof PhysicalObject)
@@ -106,10 +104,7 @@ public class Universe {
     }
 
     //todo add doc
-    public void removeObject(Object object){
-        if(object == null)
-            throw new NullPointerException(CLASS_NAME + ": Remove of \"null\" is not permitted!");
-
+    public void removeObject(@NonNull Object object){
         object.onRemoveFromUniverse();
 
         gameObjects.remove(object);
@@ -119,7 +114,7 @@ public class Universe {
     }
 
     //todo add doc
-    public Object findByName(String name){
+    public Object findByName(@NonNull String name){
         for (Object o : gameObjects)
             if(o.getName().equals(name))
                 return o;

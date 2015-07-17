@@ -29,13 +29,13 @@ import com.nzelot.engine.game.Runtime;
 import com.nzelot.engine.graphics.rendering.Color;
 import com.nzelot.engine.graphics.scenegraph.PhysicalRectangle;
 import com.nzelot.engine.graphics.scenegraph.Universe;
+import com.nzelot.engine.utils.logging.Logger;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Vector2;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import java.io.File;
 import java.util.Vector;
 
 /**
@@ -45,13 +45,15 @@ import java.util.Vector;
  */
 public class RuntimeTest {
 
+    private static final String CLASS_NAME = RuntimeTest.class.getName();
+
     public static double STEP = (2*Math.PI) / 300.0d;
 
     public static void main(String[] args) {
 
-        System.out.println(new File(".").getAbsolutePath());
+        Logger.log(CLASS_NAME + ": Welcome to the Sandbox!", Logger.LEVEL.INFO);
 
-        Game g = new Game(1280, 720, false, "Test") {
+        Game g = new Game(1280, 720, false, "Sandbox") {
 
             private PhysicalRectangle red;
             private PhysicalRectangle blu;

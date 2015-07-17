@@ -25,6 +25,7 @@
 package com.nzelot.engine.graphics.rendering;
 
 import com.nzelot.engine.utils.BufferUtils;
+import lombok.NonNull;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -46,7 +47,7 @@ public class VertexArray {
         vao = glGenVertexArrays();
     }
 
-    public VertexArray(float[] vertices, byte[] indices, float[] textureCoordinates) {
+    public VertexArray(@NonNull float[] vertices, @NonNull byte[] indices, @NonNull float[] textureCoordinates) {
         count = indices.length;
 
         vao = glGenVertexArrays();

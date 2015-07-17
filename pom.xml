@@ -36,46 +36,42 @@
 
     <modules>
         <module>engine</module>
+        <module>sandbox</module>
     </modules>
 
     <properties>
+        <arrange.dir>${project.basedir}/../bin</arrange.dir>
+
+        <com.nzelot.engine.version>0.1-SNAPSHOT</com.nzelot.engine.version>
+        <com.nzelot.sandbox.version>0.1-SNAPSHOT</com.nzelot.sandbox.version>
+
         <lwjgl.version>3.0.0a</lwjgl.version>
+        <dyn4j.version>3.1.11</dyn4j.version>
+        <joml.version>2b4acfa177286c5819fed41b54981f9034ecbe52</joml.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
-            <version>3.0.0a</version>
+            <version>${lwjgl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dyn4j</groupId>
             <artifactId>dyn4j</artifactId>
-            <version>3.1.11</version>
+            <version>${dyn4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.JOML-CI</groupId>
             <artifactId>joml</artifactId>
-            <version>2b4acfa177286c5819fed41b54981f9034ecbe52</version>
+            <version>${joml.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-platform</artifactId>
             <version>${lwjgl.version}</version>
-            <classifier>natives-windows</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-platform</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-osx</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-platform</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-linux</classifier>
+            <classifier>natives-${lwjgl.platform.family}</classifier>
         </dependency>
     </dependencies>
 
@@ -90,8 +86,69 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${arrange.dir}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeGroupIds>org.projectlombok</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>win</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <lwjgl.platform.family>windows</lwjgl.platform.family>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.platform.family>osx</lwjgl.platform.family>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.platform.family>linux</lwjgl.platform.family>
+            </properties>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>

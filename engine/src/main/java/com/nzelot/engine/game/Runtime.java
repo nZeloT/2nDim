@@ -25,6 +25,7 @@
 package com.nzelot.engine.game;
 
 import com.nzelot.engine.utils.logging.Logger;
+import lombok.NonNull;
 
 /**
  * Start a game and provide a possibility to halt it without every game object having a reference to the game object.
@@ -47,7 +48,7 @@ public class Runtime {
      *
      * @param game the <code>Game</code>-Object to launch
      */
-    public static void runGame(Game game) {
+    public static void runGame(@NonNull Game game) {
         if (instance.game == null) {
 
             instance.game = game;

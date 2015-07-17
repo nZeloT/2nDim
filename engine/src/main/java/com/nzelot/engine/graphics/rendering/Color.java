@@ -24,6 +24,7 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import lombok.NonNull;
 import org.joml.Vector4f;
 
 //TODO: add some doc
@@ -35,8 +36,8 @@ public class Color {
 
     public Vector4f color;
 
-    public Color(Vector4f color) {
-        this.color = color;
+    public Color(@NonNull Vector4f color) {
+        this.color = new Vector4f(color);
     }
 
     public Color(float r, float g, float b, float a) {

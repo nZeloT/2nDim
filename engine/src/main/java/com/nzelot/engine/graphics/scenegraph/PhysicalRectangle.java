@@ -25,6 +25,7 @@
 package com.nzelot.engine.graphics.scenegraph;
 
 import com.nzelot.engine.graphics.rendering.*;
+import lombok.NonNull;
 import org.dyn4j.geometry.Rectangle;
 import org.joml.Matrix4f;
 
@@ -39,7 +40,7 @@ public class PhysicalRectangle extends PhysicalObject {
     private VertexArray geo;
     private Color color;
 
-    public PhysicalRectangle(String name, double sizeX, double sizeY, Color color) {
+    public PhysicalRectangle(String name, double sizeX, double sizeY, @NonNull Color color) {
         super(name);
 
         //setup physics
