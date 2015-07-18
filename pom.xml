@@ -29,14 +29,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.nzelot</groupId>
-    <artifactId>games</artifactId>
+    <artifactId>2nDim</artifactId>
     <version>1.0</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>engine</module>
-        <module>sandbox</module>
+        <module>2nDim-core</module>
+        <module>2nDim-sandbox</module>
     </modules>
 
     <properties>

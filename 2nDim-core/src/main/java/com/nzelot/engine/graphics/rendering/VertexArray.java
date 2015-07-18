@@ -86,10 +86,14 @@ public class VertexArray {
     }
 
     public void render() {
+        render(GL_TRIANGLES);
+    }
+
+    public void render(int glBeginMode){
         if (ibo > 0)
-            glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_BYTE, 0);
+            glDrawElements(glBeginMode, count, GL_UNSIGNED_BYTE, 0);
         else
-            glDrawArrays(GL_TRIANGLES, 0, count);
+            glDrawArrays(glBeginMode, 0, count);
     }
 
 }

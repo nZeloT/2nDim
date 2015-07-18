@@ -149,10 +149,10 @@ public class ShaderManager {
      */
     public enum STANDARD {
 
-        SQUARE("com.nzelot.engine.shader.standard.square", "res/shader/colSquare.vert", "res/shader/colSquare.frag"),
-        SQUARE_TEXTURE("com.nzelot.engine.shader.standard.square_tex", "res/shader/texSquare.vert", "res/shader/texSquare.frag"),
-        CIRCLE("com.nzelot.engine.shader.standard.circle", "res/shader/texSquare.vert", "res/shader/colCircle.frag"),
-        CIRLCE_TEXTURE("com.nzelot.engine.shader.standard.circle_tex", "res/shader/texSquare.vert", "res/shader/texCircle.frag");
+        SQUARE("com.nzelot.2nDim.shader.standard.square", "res/shader/simple.vert", "res/shader/colSquare.frag"),
+        SQUARE_TEXTURE("com.nzelot.2nDim.shader.standard.square_tex", "res/shader/simpleTex.vert", "res/shader/texSquare.frag"),
+        CIRCLE("com.nzelot.2nDim.shader.standard.circle", "res/shader/simpleTex.vert", "res/shader/colCircle.frag"),
+        CIRLCE_TEXTURE("com.nzelot.2nDim.shader.standard.circle_tex", "res/shader/simpleTex.vert", "res/shader/texCircle.frag");
 
         private @Getter String key;
 

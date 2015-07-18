@@ -22,66 +22,58 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.graphics.rendering;
+package com.nzelot.engine.graphics.scenegraph;
 
+import com.nzelot.engine.graphics.rendering.*;
 import lombok.NonNull;
-import org.joml.Vector4f;
-
-//TODO: add some doc
+import org.dyn4j.geometry.Circle;
+import org.joml.Matrix4f;
 
 /**
  * @author nZeloT
  */
-public class Color {
+public class PhysicalCircle extends PhysicalObject {
 
-    public Vector4f color;
+    private Shader shader;
+    private VertexArray geo;
+    private Color color;
 
-    public Color(@NonNull Vector4f color) {
-        this.color = new Vector4f(color);
+    public PhysicalCircle(String name, double radius, @NonNull Color color) {
+        super(name);
+
+        //setup physics
+        addFixture(new Circle(radius));
+        setMass();
+
+        //setup appearance
+        this.shader = ShaderManager.getShader(ShaderManager.STANDARD.CIRCLE);
+        this.geo = VertexArrayManager.getVertexArray(VertexArrayManager.STANDARD.SQUARE);
+        this.color = color;
     }
 
-    public Color(float r, float g, float b, float a) {
-        this.color = new Vector4f(r, g, b, a);
+    @Override
+    public void update(double delta) {
+        //NOP
     }
 
-    public Color(float r, float g, float b) {
-        this.color = new Vector4f(r, g, b, 1.0f);
+    @Override
+    public void render(Matrix4f transformation) {
+        shader.setUniform4f("col", color.asVector4f());
+        shader.setUniformMat4f("mv_matrix", transMat);
+
+        shader.bind();
+        geo.bind();
+
+        geo.render();
     }
 
-    public Vector4f asVector4f() {
-        return color;
+    @Override
+    protected void onAddToUniverse() {
+        shader.setUniformMat4f("pr_matrix", getUniverse().getProjMat());
     }
 
-    public float getRed() {
-        return color.x;
+    @Override
+    protected void onRemoveFromUniverse() {
+        //NOP
     }
-
-    public void setRed(float r) {
-        color.x = r;
-    }
-
-    public float getGreen() {
-        return color.y;
-    }
-
-    public void setGreen(float g) {
-        color.x = g;
-    }
-
-    public float getBlue() {
-        return color.z;
-    }
-
-    public void setBlue(float b) {
-        color.x = b;
-    }
-
-    public float getAlpha() {
-        return color.w;
-    }
-
-    public void setAlpha(float a) {
-        color.x = a;
-    }
-
 }

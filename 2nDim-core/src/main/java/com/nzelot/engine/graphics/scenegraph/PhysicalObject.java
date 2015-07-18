@@ -28,7 +28,7 @@ import com.nzelot.engine.utils.Constants;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import org.dyn4j.dynamics.*;
-import org.dyn4j.dynamics.joint.WeldJoint;
+import org.dyn4j.dynamics.joint.*;
 import org.dyn4j.geometry.*;
 import org.joml.Matrix4f;
 
@@ -102,11 +102,82 @@ public abstract class PhysicalObject extends Object{
         physicalBody.rotateAboutCenter(rad);
     }
 
-    public void addWeldJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
+    public WeldJoint addWeldJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
-            w.addJoint(new WeldJoint(physicalBody, target.getBody(), anchor));
+            WeldJoint j = new WeldJoint(physicalBody, target.getBody(), anchor);
+            w.addJoint(j);
+            return j;
         }
+
+        return null;
+    }
+
+    public DistanceJoint addDistanceJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            DistanceJoint j = new DistanceJoint(physicalBody, target.getBody(), anchor1, anchor2);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
+    }
+
+    public RevoluteJoint addRevoluteJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            RevoluteJoint j = new RevoluteJoint(physicalBody, target.getBody(), anchor);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
+    }
+
+    public PrismaticJoint addPrismaticJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor, @NonNull Vector2 axis){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            PrismaticJoint j = new PrismaticJoint(physicalBody, target.getBody(), anchor, axis);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
+    }
+
+    public PulleyJoint addPulleyJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2,
+                               @NonNull Vector2 bodyAnchor1, @NonNull Vector2 bodyAnchor2){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            PulleyJoint j = new PulleyJoint(physicalBody, target.getBody(), anchor1, anchor2, bodyAnchor1, bodyAnchor2);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
+    }
+
+    public RopeJoint addRopeJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            RopeJoint j = new RopeJoint(physicalBody, target.getBody(), anchor1, anchor2);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
+    }
+
+    public WheelJoint addWheelJoint(@NonNull PhysicalObject wheel, @NonNull Vector2 anchor, @NonNull Vector2 axis){
+        if(isPartOfWorld()){
+            World w = physicalBody.getWorld();
+            WheelJoint j = new WheelJoint(physicalBody, wheel.getBody(), anchor, axis);
+            w.addJoint(j);
+            return j;
+        }
+
+        return null;
     }
 
     protected boolean isPartOfWorld(){

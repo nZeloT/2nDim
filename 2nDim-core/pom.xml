@@ -28,30 +28,29 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sandbox</artifactId>
-    <version>${com.nzelot.sandbox.version}</version>
+    <artifactId>2nDim-core</artifactId>
+    <version>${com.nzelot.engine.version}</version>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>com.nzelot</groupId>
-        <artifactId>games</artifactId>
+        <artifactId>2nDim</artifactId>
         <version>1.0</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <properties>
-        <com.nzelot.sandbox.mainClass>com.nzelot.sandbox.RuntimeTest</com.nzelot.sandbox.mainClass>
-    </properties>
-
     <dependencies>
         <dependency>
-            <groupId>com.nzelot</groupId>
-            <artifactId>engine</artifactId>
-            <version>${com.nzelot.engine.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
+
     <build>
-        <directory>../bin/sandbox</directory>
+        <directory>../bin/${project.artifactId}</directory>
 
         <plugins>
             <plugin>
@@ -60,15 +59,9 @@
                 <version>2.6</version>
                 <configuration>
                     <outputDirectory>${arrange.dir}</outputDirectory>
-                    <archive>
-                        <manifest>
-                            <mainClass>${com.nzelot.sandbox.mainClass}</mainClass>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

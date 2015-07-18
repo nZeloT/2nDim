@@ -58,7 +58,7 @@ public abstract class Object {
         this.zIndex     = 0;
         this.transMat = new Matrix4f().identity();
 
-        setName(this.name);
+        setName(name);
     }
 
     /**

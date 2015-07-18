@@ -46,13 +46,10 @@ public class VertexArrayManager {
     private VertexArrayManager() {
     }
 
-    //*************************************************
-    // access Methods
+
     public static VertexArray getVertexArray(STANDARD std) {
         return getVertexArray(std.getKey());
     }
-    // end access methods
-    //*************************************************
 
     public static VertexArray getVertexArray(String key) {
         VertexArray va = arrays.get(key);
@@ -101,7 +98,7 @@ public class VertexArrayManager {
     //enum Standard
     public enum STANDARD {
         SQUARE(
-                "com.nzelot.engine.vertexarray.standard.square",
+                "com.nzelot.2nDim.vertexarray.standard.square",
                 new float[]{
                         -0.5f, -0.5f, 0.0f, // 0-----1
                         0.5f, -0.5f, 0.0f, // |     |
@@ -118,6 +115,13 @@ public class VertexArrayManager {
                         1, 0,
                         0, 0
                 }
+        ),
+        //a 16 vert circle
+        CIRCLE16(
+                "com.nzelot.2nDim.vertexarray.standard.circle16",
+                CircleGenerator.vertGen(16),
+                CircleGenerator.indGen(16),
+                CircleGenerator.tcsGen(16)
         );
 
         private @Getter String key;
@@ -131,5 +135,7 @@ public class VertexArrayManager {
             this.ind = ind;
             this.tcs = tcs;
         }
+
     }
+
 }
