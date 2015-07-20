@@ -30,18 +30,12 @@ import lombok.experimental.Delegate;
 import org.dyn4j.dynamics.*;
 import org.dyn4j.dynamics.joint.*;
 import org.dyn4j.geometry.*;
-import org.joml.Matrix4f;
 
 /**
  * @author nZeloT
  */
-//todo add doc
-public abstract class PhysicalObject extends Object{
-
-    private final Matrix4f mT;
-    private final Matrix4f mS;
-    private final Matrix4f mR;
-
+//doc
+public abstract class PhysicalObject extends GameObject {
 
     private @Delegate(types = BodyDelegates.class) Body physicalBody;
     private AABB aabb;
@@ -54,54 +48,50 @@ public abstract class PhysicalObject extends Object{
     PhysicalObject(String name) {
         super(name);
         physicalBody = new Body();
-
-        mR = new Matrix4f();
-        mT = new Matrix4f();
-        mS = new Matrix4f();
     }
 
+    //doc
     @Override
     public Vector2 getTranslation() {
         return physicalBody.getTransform().getTranslation();
     }
 
+    //doc
     @Override
     public void setTranslation(@NonNull Vector2 pos) {
         physicalBody.getTransform().setTranslation(pos);
     }
 
+    //doc
     @Override
     public double getRotation() {
         return physicalBody.getTransform().getRotation();
     }
 
+    //doc
     @Override
     public void setRotation(double rad) {
         physicalBody.getTransform().setRotation(rad);
     }
 
+    //doc
     @Override
     void updateMatrix() {
         Transform transform = physicalBody.getTransform();
         transMat.identity();
 
-        mR.identity();
-        mR.rotateZ((float) transform.getRotation());
-
-        mT.identity();
-        mT.translate((float) transform.getTranslationX(), (float) transform.getTranslationY(), 0);
-
-        mS.identity();
-        mS.scale((float) (aabb.getWidth() * Constants.PHY_SCALE), (float) (aabb.getHeight() * Constants.PHY_SCALE), 1);
-
-        mR.mul(mS, transMat);
-        mT.mul(transMat, transMat);
+        //the order is correct because of the way joml calculates the new matrix
+        transMat.translate((float) transform.getTranslationX(), (float) transform.getTranslationY(), 0);
+        transMat.rotateZ((float) transform.getRotation());
+        transMat.scale((float) (aabb.getWidth() * Constants.PHY_SCALE), (float) (aabb.getHeight() * Constants.PHY_SCALE), 1);
     }
 
+    //doc
     public void rotateAtMassCenter(double rad){
         physicalBody.rotateAboutCenter(rad);
     }
 
+    //doc
     public WeldJoint addWeldJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -113,6 +103,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public DistanceJoint addDistanceJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -124,6 +115,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public RevoluteJoint addRevoluteJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -135,6 +127,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public PrismaticJoint addPrismaticJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor, @NonNull Vector2 axis){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -146,6 +139,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public PulleyJoint addPulleyJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2,
                                @NonNull Vector2 bodyAnchor1, @NonNull Vector2 bodyAnchor2){
         if(isPartOfWorld()){
@@ -158,6 +152,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public RopeJoint addRopeJoint(@NonNull PhysicalObject target, @NonNull Vector2 anchor1, @NonNull Vector2 anchor2){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -169,6 +164,7 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     public WheelJoint addWheelJoint(@NonNull PhysicalObject wheel, @NonNull Vector2 anchor, @NonNull Vector2 axis){
         if(isPartOfWorld()){
             World w = physicalBody.getWorld();
@@ -180,39 +176,45 @@ public abstract class PhysicalObject extends Object{
         return null;
     }
 
+    //doc
     protected boolean isPartOfWorld(){
         return physicalBody.getWorld() != null;
     }
 
+    //doc
     Body getBody(){
         return physicalBody;
     }
 
+    //doc
     protected BodyFixture addFixture(@NonNull Convex convex) {
         BodyFixture fix =  physicalBody.addFixture(convex);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
+    //doc
     protected BodyFixture addFixture(@NonNull Convex convex, double density) {
         BodyFixture fix = physicalBody.addFixture(convex, density);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
+    //doc
     protected BodyFixture addFixture(@NonNull Convex convex, double density, double friction, double restitution) {
         BodyFixture fix =  physicalBody.addFixture(convex, density, friction, restitution);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
+    //doc
     protected Body addFixture(@NonNull BodyFixture fixture) {
         Body b = physicalBody.addFixture(fixture);
         aabb = physicalBody.createAABB();
         return b;
     }
 
-    //todo add doc
+    //doc
     private interface BodyDelegates {
         Body setMass();
         Body setMass(Mass.Type type);

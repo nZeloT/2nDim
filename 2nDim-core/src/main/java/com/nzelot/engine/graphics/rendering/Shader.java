@@ -47,6 +47,7 @@ import static org.lwjgl.opengl.GL20.*;
  * @author TheCherno
  * @author nZeloT
  */
+//todo use uniform blocks for the projection and camera matrices instead of uniforms for each shader
 public class Shader {
 
     public static final int VERTEX_ATTRIB = 0;

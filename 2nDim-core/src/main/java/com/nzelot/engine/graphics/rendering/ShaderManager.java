@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * @author nZeloT
  */
-//TODO: add some doc here
+//doc here
 public class ShaderManager {
 
     private static final String CLASS_NAME = ShaderManager.class.getName();
@@ -156,7 +156,7 @@ public class ShaderManager {
 
         private @Getter String key;
 
-        //TODO: improved as they are included in the generated jar, but still not fine with the solution!
+        //fixme: improved as they are included in the generated jar, but still not fine with the solution!
         private @Getter String vertPath;
         private @Getter String fragPath;
 

@@ -37,9 +37,9 @@ import org.joml.Matrix4f;
  *
  * @author nZeloT
  */
-public abstract class Object {
+public abstract class GameObject {
 
-    private static final String CLASS_NAME = Object.class.getName();
+    private static final String CLASS_NAME = GameObject.class.getName();
 
     private @Getter String name;
 
@@ -54,7 +54,7 @@ public abstract class Object {
      *
      * @param name the name of the entity; can be used to find the entity in the SceneGraph
      */
-    Object(String name) {
+    GameObject(String name) {
         this.zIndex     = 0;
         this.transMat = new Matrix4f().identity();
 

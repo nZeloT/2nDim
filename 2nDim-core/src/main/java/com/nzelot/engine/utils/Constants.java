@@ -32,4 +32,7 @@ public class Constants {
     /** 1 OpenGL Unit = 1 Physical Meter */
     public static final int PHY_SCALE = 1;
 
+    /** used for the calculation with radians */
+    public static final double TWO_PI = 2 * Math.PI;
+
 }

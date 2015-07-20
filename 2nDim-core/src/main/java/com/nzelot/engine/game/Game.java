@@ -38,11 +38,11 @@ import third.party.SharedLibraryLoader;
  *
  * @author nZeloT
  */
-public abstract class Game {
+public abstract class Game<E extends Universe> {
 
     private static final String CLASS_NAME = Game.class.getName();
 
-    private Universe universe;
+    private E universe;
     private Window window;
 
     private boolean running;
@@ -108,7 +108,7 @@ public abstract class Game {
      *
      * @return the root object of the scenegraph. e.g. an instance of <code>Universe</code>
      */
-    protected abstract Universe initGame();
+    protected abstract E initGame();
 
     /**
      * the real game loop. calls <code>update()</code> and <code>render()</code> every frame.
@@ -235,7 +235,7 @@ public abstract class Game {
      *
      * @return the scene graph / world root node
      */
-    public Universe getUniverse() {
+    public E getUniverse() {
         return universe;
     }
 }

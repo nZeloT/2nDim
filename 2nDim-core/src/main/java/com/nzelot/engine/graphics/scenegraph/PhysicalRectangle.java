@@ -32,7 +32,7 @@ import org.joml.Matrix4f;
 /**
  * @author nZeloT
  */
-//todo add do
+//doc
 // for textures also set this.shader.setUniform1i("tex", 1);
 public class PhysicalRectangle extends PhysicalObject {
 
@@ -40,6 +40,7 @@ public class PhysicalRectangle extends PhysicalObject {
     private VertexArray geo;
     private Color color;
 
+    //doc
     public PhysicalRectangle(String name, double sizeX, double sizeY, @NonNull Color color) {
         super(name);
 
@@ -53,25 +54,30 @@ public class PhysicalRectangle extends PhysicalObject {
         this.color = color;
     }
 
+    //doc
     @Override
     protected void onAddToUniverse() {
-        shader.setUniformMat4f("pr_matrix", getUniverse().getProjMat());
+        shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
     }
 
+    //doc
     @Override
     protected void onRemoveFromUniverse() {
         //NOP
     }
 
+    //doc
     @Override
     public void update(double delta) {
         //NOP
     }
 
+    //doc
     @Override
     public void render(Matrix4f transformation) {
         shader.setUniform4f("col", color.asVector4f());
         shader.setUniformMat4f("mv_matrix", transMat);
+        shader.setUniformMat4f("cm_matrix", getUniverse().getCameraMat());
 
         shader.bind();
         geo.bind();

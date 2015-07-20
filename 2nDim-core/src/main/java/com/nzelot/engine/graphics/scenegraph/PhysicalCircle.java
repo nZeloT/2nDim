@@ -32,12 +32,14 @@ import org.joml.Matrix4f;
 /**
  * @author nZeloT
  */
+//doc
 public class PhysicalCircle extends PhysicalObject {
 
     private Shader shader;
     private VertexArray geo;
     private Color color;
 
+    //doc
     public PhysicalCircle(String name, double radius, @NonNull Color color) {
         super(name);
 
@@ -51,15 +53,18 @@ public class PhysicalCircle extends PhysicalObject {
         this.color = color;
     }
 
+    //doc
     @Override
     public void update(double delta) {
         //NOP
     }
 
+    //doc
     @Override
     public void render(Matrix4f transformation) {
         shader.setUniform4f("col", color.asVector4f());
         shader.setUniformMat4f("mv_matrix", transMat);
+        shader.setUniformMat4f("cm_matrix", getUniverse().getCameraMat());
 
         shader.bind();
         geo.bind();
@@ -67,11 +72,13 @@ public class PhysicalCircle extends PhysicalObject {
         geo.render();
     }
 
+    //doc
     @Override
     protected void onAddToUniverse() {
-        shader.setUniformMat4f("pr_matrix", getUniverse().getProjMat());
+        shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
     }
 
+    //doc
     @Override
     protected void onRemoveFromUniverse() {
         //NOP

@@ -26,6 +26,7 @@ package com.nzelot.sandbox;
 
 import com.nzelot.engine.game.Game;
 import com.nzelot.engine.game.Runtime;
+import com.nzelot.engine.graphics.rendering.Camera;
 import com.nzelot.engine.graphics.rendering.Color;
 import com.nzelot.engine.graphics.scenegraph.*;
 import com.nzelot.engine.utils.logging.Logger;
@@ -33,7 +34,6 @@ import org.dyn4j.dynamics.joint.RevoluteJoint;
 import org.dyn4j.dynamics.joint.WheelJoint;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Vector2;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -50,21 +50,22 @@ public class Sandbox {
 
         Logger.log(CLASS_NAME + ": Welcome to the Sandbox!", Logger.LEVEL.INFO);
 
-        Game g = new Game(1280, 720, false, "2nDim Sandbox! Enjoy :)") {
+        Game<PhysicalUniverse> g = new Game<PhysicalUniverse>(1280, 720, false, "2nDim Sandbox! Enjoy :)") {
 
             private Vehicle vehic;
             private PhysicalObject floor;
+            private Camera camera;
 
             @Override
-            protected Universe initGame() {
+            protected PhysicalUniverse initGame() {
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GL13.glActiveTexture(GL13.GL_TEXTURE1);
 
-                Matrix4f pr_matrix = new Matrix4f();
-                pr_matrix.identity().setOrtho(-20.0f, 20.0f, -20.0f * 9.0f / 16.0f, 20.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-
-                Universe universe = new Universe(pr_matrix);
+                PhysicalUniverse universe = new PhysicalUniverse(this);
+                //welcome to the moon :D
+                universe.setGravity(new Vector2(0, -9.81f * 1/16.0f));
+                camera = universe.getMainCamera();
 
                 floor = new PhysicalRectangle(
                         "Floor",
@@ -109,7 +110,10 @@ public class Sandbox {
 
             @Override
             protected void updateGame(double delta) {
-
+                //some weird rotation to test the camera
+                // looks pretty WTF :D
+                camera.rotate(0.0125f);
+                //camera.translate(0.1f,0.1f);
             }
 
             @Override
