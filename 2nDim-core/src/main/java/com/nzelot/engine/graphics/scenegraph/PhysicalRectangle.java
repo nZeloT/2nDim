@@ -49,8 +49,8 @@ public class PhysicalRectangle extends PhysicalObject {
         setMass();
 
         //setup appearance
-        this.shader = ShaderManager.getShader(ShaderManager.STANDARD.SQUARE);
-        this.geo = VertexArrayManager.getVertexArray(VertexArrayManager.STANDARD.SQUARE);
+        this.shader = ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE);
+        this.geo = VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE);
         this.color = color;
     }
 
@@ -78,6 +78,7 @@ public class PhysicalRectangle extends PhysicalObject {
         shader.setUniform4f("col", color.asVector4f());
         shader.setUniformMat4f("mv_matrix", transMat);
         shader.setUniformMat4f("cm_matrix", getUniverse().getCameraMat());
+        shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
 
         shader.bind();
         geo.bind();

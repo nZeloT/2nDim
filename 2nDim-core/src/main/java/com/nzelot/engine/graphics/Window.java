@@ -90,7 +90,7 @@ public class Window {
 
     public boolean init() {
         if (glfwInit() != GL_TRUE) {
-            Logger.log("Could not initGame GLFW!", Logger.LEVEL.ERROR);
+            Logger.log(Window.class, "Could not initGame GLFW!", Logger.LEVEL.ERROR);
             glfwTerminate();
             return false;
         }
@@ -100,7 +100,7 @@ public class Window {
             return false;
         }
 
-        Logger.log("OpenGL Version: " + glGetString(GL_VERSION));
+        Logger.log(Window.class, "OpenGL Version: " + glGetString(GL_VERSION), Logger.LEVEL.INFO);
 
         return true;
     }
@@ -121,7 +121,7 @@ public class Window {
         long newWindowID = glfwCreateWindow(width, height, title, monitor, grabContext);
 
         if (windowID == NULL) {
-            Logger.log("Could not create Window!", Logger.LEVEL.ERROR);
+            Logger.log(Window.class, "Could not create Window!", Logger.LEVEL.ERROR);
             return false;
         }
 
@@ -130,7 +130,7 @@ public class Window {
         windowID = newWindowID;
 
         glfwMakeContextCurrent(windowID);
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
         setUpCallbacks();
 
@@ -190,7 +190,7 @@ public class Window {
     public void update() {
         long error = glGetError();
         if (error != GL_NO_ERROR) {
-            Logger.log("OpenGL Error: " + error, Logger.LEVEL.ERROR);
+            Logger.log(Window.class, "OpenGL Error: " + error, Logger.LEVEL.ERROR);
         }
 
         glfwSwapBuffers(this.windowID);
@@ -215,7 +215,7 @@ public class Window {
 
     public boolean isKeyPressed(int keycode) {
         if (keycode >= KEY_COUNT) {
-            Logger.log("Tried isKeyPressed on key: " + keycode + "; KEY_COUNT is " + KEY_COUNT, Logger.LEVEL.WARNING);
+            Logger.log(Window.class, "Tried isKeyPressed on key: " + keycode + "; KEY_COUNT is " + KEY_COUNT, Logger.LEVEL.WARNING);
             return false;
         }
 
@@ -224,7 +224,7 @@ public class Window {
 
     public boolean isKeyTyped(int keycode) {
         if (keycode >= KEY_COUNT) {
-            Logger.log("Tried isKeyTyped on key: " + keycode + "; KEY_COUNT is " + KEY_COUNT, Logger.LEVEL.WARNING);
+            Logger.log(Window.class, "Tried isKeyTyped on key: " + keycode + "; KEY_COUNT is " + KEY_COUNT, Logger.LEVEL.WARNING);
             return false;
         }
 
@@ -233,7 +233,7 @@ public class Window {
 
     public boolean isMouseButtonPressed(int btn) {
         if (btn >= BTN_COUNT) {
-            Logger.log("Tried isMouseButtonPressed on button: " + btn + "; BTN_COUNT is " + BTN_COUNT, Logger.LEVEL.WARNING);
+            Logger.log(Window.class, "Tried isMouseButtonPressed on button: " + btn + "; BTN_COUNT is " + BTN_COUNT, Logger.LEVEL.WARNING);
             return false;
         }
 
@@ -242,7 +242,7 @@ public class Window {
 
     public boolean isMouseButtonClicked(int btn) {
         if (btn >= BTN_COUNT) {
-            Logger.log("Tried isMouseButtonClicked on button: " + btn + "; BTN_COUNT is " + BTN_COUNT, Logger.LEVEL.WARNING);
+            Logger.log(Window.class, "Tried isMouseButtonClicked on button: " + btn + "; BTN_COUNT is " + BTN_COUNT, Logger.LEVEL.WARNING);
             return false;
         }
 

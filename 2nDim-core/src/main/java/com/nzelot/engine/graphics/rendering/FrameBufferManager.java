@@ -22,25 +22,42 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.utils.logging;
+package com.nzelot.engine.graphics.rendering;
+
+import com.nzelot.engine.definition.Manager;
+import com.nzelot.engine.utils.logging.Logger;
+import lombok.NonNull;
+
+import java.util.Map;
 
 /**
- * Default Logger Implementation directing log entries to <code>System.out</code> or <code>System.err</code>
- *
  * @author nZeloT
  */
-//TODO: add some doc
-public class DefaultLogger extends Logger {
+public class FrameBufferManager extends Manager<FrameBuffer> {
 
-    @Override
-    protected void log(String s, LEVEL logLevel, LEVEL currentOutputLevel) {
-        if (logLevel.getPriority() <= currentOutputLevel.getPriority()) {
+    //fixme this is only temporary
+    public static final FrameBufferManager instance = new FrameBufferManager();
 
-            if (logLevel.getPriority() <= 1)
-                System.err.println(s);
-            else
-                System.out.println(s);
-        }
+    //prevent instantiation
+    private FrameBufferManager() {
     }
 
+    public FrameBuffer create(@NonNull String key,
+                              int width,
+                              int heigth){
+        if (objects.containsKey(key)) {
+            Logger.log(FrameBufferManager.class, "Tried to store already stored FrameBuffer with key: " + key, Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to store already stored FrameBuffer with key: " + key);
+        }
+
+        FrameBuffer fbo = new FrameBuffer(width, heigth);
+        objects.put(key, fbo);
+
+        return fbo;
+    }
+
+    @Override
+    protected void initSTD(Map<String, FrameBuffer> map) {
+        //NOP No STANDARD FBO's so far. And I cannot think of any ...
+    }
 }

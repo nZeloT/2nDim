@@ -187,28 +187,28 @@ public abstract class PhysicalObject extends GameObject {
     }
 
     //doc
-    protected BodyFixture addFixture(@NonNull Convex convex) {
+    BodyFixture addFixture(@NonNull Convex convex) {
         BodyFixture fix =  physicalBody.addFixture(convex);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
     //doc
-    protected BodyFixture addFixture(@NonNull Convex convex, double density) {
+    BodyFixture addFixture(@NonNull Convex convex, double density) {
         BodyFixture fix = physicalBody.addFixture(convex, density);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
     //doc
-    protected BodyFixture addFixture(@NonNull Convex convex, double density, double friction, double restitution) {
+    BodyFixture addFixture(@NonNull Convex convex, double density, double friction, double restitution) {
         BodyFixture fix =  physicalBody.addFixture(convex, density, friction, restitution);
         aabb = physicalBody.createAABB();
         return fix;
     }
 
     //doc
-    protected Body addFixture(@NonNull BodyFixture fixture) {
+    Body addFixture(@NonNull BodyFixture fixture) {
         Body b = physicalBody.addFixture(fixture);
         aabb = physicalBody.createAABB();
         return b;

@@ -39,8 +39,6 @@ import org.joml.Matrix4f;
  */
 public abstract class GameObject {
 
-    private static final String CLASS_NAME = GameObject.class.getName();
-
     private @Getter String name;
 
     private @Getter int zIndex;

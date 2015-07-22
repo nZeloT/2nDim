@@ -26,9 +26,7 @@ package com.nzelot.engine.utils;
 
 import com.nzelot.engine.utils.logging.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 
 /**
  * taken from https://github.com/TheCherno/Flappy/tree/master/src/com/thecherno/flappy/utils
@@ -38,20 +36,19 @@ import java.io.FileReader;
  * @author TheCherno
  * @author nZeloT
  */
-//TODO: add some doc
+//doc
 public class FileUtils {
-
-    private static final String CLASS_NAME = FileUtils.class.getName();
 
     //prevent instantiation
     private FileUtils() {
     }
 
+    //load relative to the working dir
     public static String loadAsString(String file) {
 
         //Does file exist?
-        if (!new File(file).exists()) {
-            Logger.log(CLASS_NAME + ": Tried to read non existing file: " + file, Logger.LEVEL.ERROR);
+        if (!isFileExistend(file)) {
+            Logger.log(FileUtils.class, "Tried to read non existing file: " + file, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to read non existing file: " + file);
         }
 
@@ -64,6 +61,27 @@ public class FileUtils {
         }
 
         return r;
+    }
+
+    public static InputStream getInputStream(String file){
+        //Does file exist?
+        if (!isFileExistend(file)) {
+            Logger.log(FileUtils.class, "Tried to read non existing file: " + file, Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to read non existing file: " + file);
+        }
+
+        InputStream in = null;
+        try{
+            in = new FileInputStream(file);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return in;
+    }
+
+    public static boolean isFileExistend(String file){
+        return new File(file).exists();
     }
 
 }

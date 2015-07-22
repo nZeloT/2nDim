@@ -22,52 +22,62 @@
  * SOFTWARE.
  */
 
-package com.nzelot.engine.game;
+package com.nzelot.engine.definition;
 
+import com.nzelot.engine.graphics.rendering.ShaderManager;
 import com.nzelot.engine.utils.logging.Logger;
 import lombok.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
- * Start a game and provide a possibility to halt it without every game object having a reference to the game object.
- *
  * @author nZeloT
  */
-public class Runtime {
+public abstract class Manager<E extends ManagedObject> {
 
-    private static final Runtime instance = new Runtime();
-    private Game game;
+    protected Map<String, E> objects;
 
-    //prevent instantiation
-    private Runtime() {
+    private boolean init;
+
+    protected abstract void initSTD(Map<String, E> map);
+
+    public E get(@NonNull String key) {
+        E s = objects.get(key);
+
+        if (s == null) {
+            Logger.log(ShaderManager.class, "Tried to access non existent managed object with key: " + key, Logger.LEVEL.WARNING);
+        }
+
+        return s;
     }
 
-    /**
-     * Kick-off a <code>Game</code> in a new <code>Thread</code>
-     *
-     * @param game the <code>Game</code>-Object to launch
-     */
-    public static void runGame(@NonNull Game game) {
-        if (instance.game == null) {
+    public void init() {
+        //prevent from calling this multiple times
+        if (!init) {
 
-            instance.game = game;
+            objects = new HashMap<>();
 
-            // use a method reference lambda. looks weird :P
-            Thread gameThread = new Thread(game::run);
-            gameThread.start();
+            //load all the standard objects as defined by the implementing managers
+            initSTD(objects);
 
-        } else {
-            Logger.log(Runtime.class, "Tried to launch second game! This is currently not supported.", Logger.LEVEL.ERROR);
-            throw new IllegalStateException("Game already running!");
+            init = true;
         }
     }
 
-    /**
-     * halt the started <code>Game</code>
-     */
-    public static void stopGame() {
-        if (instance.game != null)
-            instance.game.haltGameLoop();
+    public void exit(){
+        if(init){
 
+            Set<Map.Entry<String, E>> entries = objects.entrySet();
+            for (Map.Entry<String, E> entry : entries) {
+                entry.getValue().delete();
+            }
+
+            objects.clear();
+            objects = null;
+
+            init = false;
+        }
     }
-
 }

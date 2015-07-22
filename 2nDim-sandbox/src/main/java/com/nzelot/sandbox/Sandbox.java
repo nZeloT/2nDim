@@ -26,7 +26,6 @@ package com.nzelot.sandbox;
 
 import com.nzelot.engine.game.Game;
 import com.nzelot.engine.game.Runtime;
-import com.nzelot.engine.graphics.rendering.Camera;
 import com.nzelot.engine.graphics.rendering.Color;
 import com.nzelot.engine.graphics.scenegraph.*;
 import com.nzelot.engine.utils.logging.Logger;
@@ -44,11 +43,10 @@ import org.lwjgl.opengl.GL13;
  */
 public class Sandbox {
 
-    private static final String CLASS_NAME = Sandbox.class.getName();
-
     public static void main(String[] args) {
 
-        Logger.log(CLASS_NAME + ": Welcome to the Sandbox!", Logger.LEVEL.INFO);
+        Logger.setCurrentOutputLevel(Logger.LEVEL.INFO);
+        Logger.log(Sandbox.class, "Welcome to the Sandbox!", Logger.LEVEL.INFO);
 
         Game<PhysicalUniverse> g = new Game<PhysicalUniverse>(1280, 720, false, "2nDim Sandbox! Enjoy :)") {
 

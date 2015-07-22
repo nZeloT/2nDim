@@ -24,12 +24,14 @@
 
 package com.nzelot.engine.utils.logging;
 
+import lombok.NonNull;
+
 /**
  * The Logging System. made accessible through <code>static</code>-Methods. To change the output set a new <code>currentLogger</code>.
  *
  * @author nZeloT
  */
-//TODO: add some doc
+//doc
 public abstract class Logger {
 
     private static LEVEL currentOutputLevel;
@@ -39,20 +41,24 @@ public abstract class Logger {
     static {
         Logger.currentOutputLevel = LEVEL.WARNING;
         Logger.defaultLogLevel = LEVEL.WARNING;
-        Logger.currentLogger = new DefaultLogger();
+        Logger.currentLogger = new ConsoleLogger();
     }
 
-    public static void log(String s) {
-        log(s, defaultLogLevel);
+    public static void log(Class<?> cls, String s) {
+        log(cls, s, defaultLogLevel);
     }
 
-    public static void log(String s, LEVEL level) {
-        currentLogger.log(s, level, currentOutputLevel);
+    public static void log(Class<?> cls, String s, LEVEL level) {
+        currentLogger.log(cls, s, level, currentOutputLevel);
     }
 
-    protected abstract void log(String s, LEVEL logLevel, LEVEL currentOutputLevel);
+    protected abstract void log(Class<?> cls, String s, LEVEL logLevel, LEVEL currentOutputLevel);
 
-    public static void setCurrentLogger(Logger currentLogger) {
+    public static void initLogging(Logger logger){
+        currentLogger = logger;
+    }
+
+    public static void setCurrentLogger(@NonNull Logger currentLogger) {
         Logger.currentLogger = currentLogger;
     }
 

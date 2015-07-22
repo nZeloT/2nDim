@@ -24,62 +24,50 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.definition.Manager;
 import com.nzelot.engine.utils.logging.Logger;
 import lombok.Getter;
+import lombok.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author nZeloT
  */
-//TODO: add some doc
-public class VertexArrayManager {
+//doc
+public class VertexArrayManager extends Manager<VertexArray> {
 
-    private static final String CLASS_NAME = VertexArrayManager.class.getName();
-    private static Map<String, VertexArray> arrays;
-    //end enum standard
-    //*************************************************
-    private static boolean init;
+    //fixme this is only temporary
+    public static final VertexArrayManager instance = new VertexArrayManager();
 
     //prevent instantiation
     private VertexArrayManager() {
     }
 
 
-    public static VertexArray getVertexArray(STANDARD std) {
-        return getVertexArray(std.getKey());
+    public VertexArray get(STANDARD std) {
+        return get(std.getKey());
     }
 
-    public static VertexArray getVertexArray(String key) {
-        VertexArray va = arrays.get(key);
-
-        if (va == null) {
-            Logger.log(CLASS_NAME + ": Tried to access non existent VertexArray with key: " + key, Logger.LEVEL.WARNING);
-            throw new IllegalArgumentException("Tried to access non existent VertexArray with key: " + key);
-        }
-
-        return va;
-    }
-
-    public static void store(String key, VertexArray vertexArray) {
-        if (arrays.containsKey(key)) {
-            Logger.log(CLASS_NAME + ": Tried to store already stored VertexArray with key: " + key, Logger.LEVEL.ERROR);
+    public VertexArray create(@NonNull String key,
+                                                @NonNull float[] vertices,
+                                                @NonNull byte[] indices,
+                                                @NonNull float[] textureCoordinates){
+        if (objects.containsKey(key)) {
+            Logger.log(VertexArrayManager.class, "Tried to store already stored VertexArray with key: " + key, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to store already stored VertexArray with key: " + key);
         }
 
-        arrays.put(key, vertexArray);
+        VertexArray va = new VertexArray(vertices, indices, textureCoordinates);
+        objects.put(key, va);
+
+        return va;
     }
 
     /**
      * initialize the <code>ShaderManager</code>. This will be called from within the engine.
      */
-    public static void init() {
-        //prevent from calling this multiple times
-        if (!init) {
-
-            VertexArrayManager.arrays = new HashMap<>();
-
+    protected void initSTD(Map<String, VertexArray> objects) {
             //load all the standard shader
             VertexArray s;
 
@@ -87,11 +75,8 @@ public class VertexArrayManager {
             for (STANDARD standard : standards) {
                 s = new VertexArray(standard.getVert(), standard.getInd(), standard.getTcs());
 
-                arrays.put(standard.getKey(), s);
+                objects.put(standard.getKey(), s);
             }
-
-            VertexArrayManager.init = true;
-        }
     }
 
     //*************************************************

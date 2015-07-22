@@ -30,6 +30,7 @@ import com.nzelot.engine.graphics.rendering.*;
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.Vector;
 
@@ -43,16 +44,22 @@ import java.util.Vector;
 //doc
 public class Universe {
 
-    private static final String CLASS_NAME = Universe.class.getName();
+    final Vector<GameObject> gameObjects;
 
-    Vector<GameObject> gameObjects;
+    private final @Getter Camera mainCamera;
 
-    private @Getter Camera mainCamera;
+    private final VertexArray vao;
+    private final Shader shader;
+    private final Matrix4f projMat;
+    private final Matrix4f camMat;
+    private final Matrix4f modMat;
+
+    private Texture test;
 
     private boolean reorderObjects;
 
     //fixme this is only temporary i think. only until i implemented the use of FBO's
-    private @Getter Game game;
+    private final @Getter Game game;
 
     //doc
     public Universe(@NonNull Game game) {
@@ -62,7 +69,20 @@ public class Universe {
         gameObjects = new Vector<>(32);
 
         Window w = game.getWindow();
-        mainCamera = new Camera((float)w.getHeight() / (float)w.getWidth());
+        mainCamera = new Camera(new Vector3f(), w.getWidth(), w.getHeight(), 20);
+
+        vao = VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE);
+        shader = ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE_TEXTURE);
+        projMat = new Matrix4f().setOrtho2D(-w.getWidth() / 2, w.getWidth() / 2, -w.getHeight() / 2, w.getHeight() / 2);
+        camMat = new Matrix4f().identity();
+        modMat = new Matrix4f().scaling(w.getWidth(), w.getHeight(), 0);
+
+        shader.setUniform1i("tex", 1);
+        shader.setUniformMat4f("pr_matrix", projMat);
+        shader.setUniformMat4f("cm_matrix", camMat);
+        shader.setUniformMat4f("mv_matrix", modMat);
+
+        test = TextureManager.instance.get(TextureManager.STANDARD.NOT_FOUND);
 
         reorderObjects = false;
     }
@@ -79,8 +99,31 @@ public class Universe {
         VertexArray.unbind();
         Texture.unbind();
         Shader.unbind();
+        FrameBuffer.unbind();
+
+        //clear the fbo; nice effect otherwise :D
+        mainCamera.cleanUp();
+
+        //render to the camera fbo
+        mainCamera.activateForRendering();
 
         gameObjects.forEach(GameObject::renderWrap);
+
+        mainCamera.deactivateForRendering();
+
+        //Render the main camera fbo texture to the screen
+        mainCamera.getRenderedTexture().bind();
+        //shader.setUniform1i("tex", 1);
+        //fixme always setting these matrices is not very usable. find a better solution
+        //fixme as this also heavily influences the maximum fps
+        //shader.setUniformMat4f("pr_matrix", projMat);
+        //shader.setUniformMat4f("cm_matrix", camMat);
+        //shader.setUniformMat4f("mv_matrix", modMat);
+
+        shader.bind();
+        vao.bind();
+
+        vao.render();
     }
 
     //doc

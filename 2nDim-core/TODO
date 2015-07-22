@@ -1,0 +1,20 @@
+
+    - implement FBO's to enable RTT.
+    - think about using uniform blocks for distributing the projection as well as the camera matrix to every shader at once.
+    - improve documentation
+    - replace some ugly code fragments. Mostly marked with //todo or //fixme
+    - think about multithreading the update and render parts
+
+    - Implement a sprite and an animated sprite class
+    - Implement tile mapping
+
+    - What about shadows
+    - What about lighting
+
+    - UI?
+
+    - We also need some Sound
+    - and some Music playback possibilities
+
+    - A Particle system would also be kinda nice
+    - the same goes for animations

@@ -24,25 +24,22 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.definition.Manager;
 import com.nzelot.engine.utils.FileUtils;
 import com.nzelot.engine.utils.ResourceUtils;
 import com.nzelot.engine.utils.logging.Logger;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author nZeloT
  */
 //doc here
-public class ShaderManager {
+public class ShaderManager extends Manager<Shader> {
 
-    private static final String CLASS_NAME = ShaderManager.class.getName();
-
-    private static Map<String, Shader> shaders;
-
-    private static boolean init;
+    //fixme this is only temporary
+    public static final ShaderManager instance = new ShaderManager();
 
     //prevent instantiation
     private ShaderManager() {
@@ -55,26 +52,8 @@ public class ShaderManager {
      * @param std the requested standard shader
      * @return the <code>Shader</code>-Object
      */
-    public static Shader getShader(STANDARD std) {
-        return getShader(std.getKey());
-    }
-
-    /**
-     * Retrieve a <code>Shader</code>-Object identified with the given <code>key</code>.<br>
-     * Note: for the same <code>key</code>, always the same <code>Shader</code>-Object is returned.
-     *
-     * @param key the key for the requested <code>Shader</code>-Object
-     * @return the <code>Shader</code>-Object
-     */
-    public static Shader getShader(String key) {
-        Shader s = shaders.get(key);
-
-        if (s == null) {
-            Logger.log(CLASS_NAME + ": Tried to access non existent shader with key: " + key, Logger.LEVEL.WARNING);
-            throw new IllegalArgumentException("Tried to access non existent shader with key: " + key);
-        }
-
-        return s;
+    public Shader get(STANDARD std) {
+        return get(std.getKey());
     }
 
     /**
@@ -86,9 +65,9 @@ public class ShaderManager {
      * @return the newly created shader object
      * @implNote replacing a shader with another one is not supported
      */
-    public static Shader loadShaderfromFile(String key, String vertPath, String fragPath) {
-        if (shaders.containsKey(key)) {
-            Logger.log(CLASS_NAME + ": Tried to load already existing shader with key: " + key, Logger.LEVEL.ERROR);
+    public Shader create(String key, String vertPath, String fragPath) {
+        if (objects.containsKey(key)) {
+            Logger.log(ShaderManager.class, "Tried to load already existing shader with key: " + key, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to load already existing shader with key: " + key);
         }
 
@@ -96,7 +75,7 @@ public class ShaderManager {
         String frag = FileUtils.loadAsString(fragPath);
         Shader s = new Shader(vert, frag);
 
-        shaders.put(key, s);
+        objects.put(key, s);
 
         return s;
     }
@@ -109,12 +88,12 @@ public class ShaderManager {
      * @param fragPath the path to the new fragment shader
      * @return the new Standard Shader
      */
-    public static Shader replaceStandardShader(STANDARD std, String vertPath, String fragPath) {
+    public Shader replaceStandardShader(STANDARD std, String vertPath, String fragPath) {
         String vert = FileUtils.loadAsString(vertPath);
         String frag = FileUtils.loadAsString(fragPath);
         Shader s = new Shader(vert, frag);
 
-        shaders.put(std.getKey(), s);
+        objects.put(std.getKey(), s);
 
         return s;
     }
@@ -122,12 +101,7 @@ public class ShaderManager {
     /**
      * initialize the <code>ShaderManager</code>. This will be called from within the engine.
      */
-    public static void init() {
-        //prevent from calling this multiple times
-        if (!init) {
-
-            ShaderManager.shaders = new HashMap<>();
-
+    protected void initSTD(Map<String, Shader> objects) {
             //load all the standard shader
             Shader s;
 
@@ -137,11 +111,9 @@ public class ShaderManager {
                 String frag = ResourceUtils.loadAsString(standard.getFragPath());
                 s = new Shader(vert, frag);
 
-                shaders.put(standard.getKey(), s);
+                objects.put(standard.getKey(), s);
             }
 
-            ShaderManager.init = true;
-        }
     }
 
     /**
@@ -149,10 +121,10 @@ public class ShaderManager {
      */
     public enum STANDARD {
 
-        SQUARE("com.nzelot.2nDim.shader.standard.square", "res/shader/simple.vert", "res/shader/colSquare.frag"),
-        SQUARE_TEXTURE("com.nzelot.2nDim.shader.standard.square_tex", "res/shader/simpleTex.vert", "res/shader/texSquare.frag"),
-        CIRCLE("com.nzelot.2nDim.shader.standard.circle", "res/shader/simpleTex.vert", "res/shader/colCircle.frag"),
-        CIRLCE_TEXTURE("com.nzelot.2nDim.shader.standard.circle_tex", "res/shader/simpleTex.vert", "res/shader/texCircle.frag");
+        SQUARE("com.nzelot.2nDim.shader.standard.square", "res/shader/simple.vert", "res/shader/simpleAmbiant.frag"),
+        SQUARE_TEXTURE("com.nzelot.2nDim.shader.standard.square_tex", "res/shader/simpleTex.vert", "res/shader/simpleTexturedAmbiant.frag"),
+        CIRCLE("com.nzelot.2nDim.shader.standard.circle", "res/shader/simpleTex.vert", "res/shader/simpleAmbiantCircle.frag"),
+        CIRLCE_TEXTURE("com.nzelot.2nDim.shader.standard.circle_tex", "res/shader/simpleTex.vert", "res/shader/simpleTexturedAmbiantCircle.frag");
 
         private @Getter String key;
 

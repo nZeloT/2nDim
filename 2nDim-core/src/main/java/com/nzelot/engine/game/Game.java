@@ -25,8 +25,7 @@
 package com.nzelot.engine.game;
 
 import com.nzelot.engine.graphics.Window;
-import com.nzelot.engine.graphics.rendering.ShaderManager;
-import com.nzelot.engine.graphics.rendering.VertexArrayManager;
+import com.nzelot.engine.graphics.rendering.*;
 import com.nzelot.engine.graphics.scenegraph.Universe;
 import com.nzelot.engine.utils.logging.Logger;
 import third.party.SharedLibraryLoader;
@@ -39,8 +38,6 @@ import third.party.SharedLibraryLoader;
  * @author nZeloT
  */
 public abstract class Game<E extends Universe> {
-
-    private static final String CLASS_NAME = Game.class.getName();
 
     private E universe;
     private Window window;
@@ -67,7 +64,7 @@ public abstract class Game<E extends Universe> {
      * <li>endEngine()</li>
      * </ul></code> in exact that order.
      */
-    //todo update doc
+    //doc
     void run() {
         if (!running) {
             initEngine();
@@ -75,8 +72,8 @@ public abstract class Game<E extends Universe> {
             universe = initGame();
 
             if (universe == null) {
-                Logger.log(CLASS_NAME + ": No Universe defined!", Logger.LEVEL.ERROR);
-                throw new IllegalStateException(CLASS_NAME + ": No Universe defined!");
+                Logger.log(Game.class, "No Universe defined!", Logger.LEVEL.ERROR);
+                throw new IllegalStateException("No Universe defined!");
             }
 
             enterGameLoop();
@@ -94,12 +91,14 @@ public abstract class Game<E extends Universe> {
         SharedLibraryLoader.load();
 
         if (!window.init()) {
-            Logger.log(CLASS_NAME + ": Could not init Engine!", Logger.LEVEL.ERROR);
-            throw new RuntimeException(CLASS_NAME + ": Could not Initialize Engine!");
+            Logger.log(Game.class, "Could not init Engine!", Logger.LEVEL.ERROR);
+            throw new RuntimeException("Could not Initialize Engine!");
         }
 
-        VertexArrayManager.init();
-        ShaderManager.init();
+        TextureManager.instance.init();
+        VertexArrayManager.instance.init();
+        ShaderManager.instance.init();
+        FrameBufferManager.instance.init();
     }
 
     /**
@@ -142,7 +141,7 @@ public abstract class Game<E extends Universe> {
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                Logger.log(updates + " ups " + frames + " fps");
+                Logger.log(Game.class, updates + " ups " + frames + " fps", Logger.LEVEL.INFO);
                 updates = 0;
                 frames = 0;
             }
@@ -162,7 +161,11 @@ public abstract class Game<E extends Universe> {
      * shutdown the rendering platform and tear down required stuff
      */
     private void endEngine() {
-        this.window.exit();
+        FrameBufferManager.instance.exit();
+        ShaderManager.instance.exit();
+        VertexArrayManager.instance.exit();
+        TextureManager.instance.exit();
+        window.exit();
     }
 
     /**

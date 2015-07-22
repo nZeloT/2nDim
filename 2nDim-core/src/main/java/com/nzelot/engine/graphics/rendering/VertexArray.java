@@ -24,6 +24,7 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.definition.ManagedObject;
 import com.nzelot.engine.utils.BufferUtils;
 import lombok.NonNull;
 
@@ -37,17 +38,19 @@ import static org.lwjgl.opengl.GL30.*;
  *
  * @author TheCherno
  */
-public class VertexArray {
+public class VertexArray extends ManagedObject {
 
     private int vao, vbo, ibo, tbo;
     private int count;
 
-    public VertexArray(int count) {
-        this.count = count;
-        vao = glGenVertexArrays();
-    }
+    private boolean enabled;
 
-    public VertexArray(@NonNull float[] vertices, @NonNull byte[] indices, @NonNull float[] textureCoordinates) {
+    //VertexArray(int count) {
+    //    this.count = count;
+    //    vao = glGenVertexArrays();
+    //}
+
+    VertexArray(@NonNull float[] vertices, @NonNull byte[] indices, @NonNull float[] textureCoordinates) {
         count = indices.length;
 
         vao = glGenVertexArrays();
@@ -72,6 +75,8 @@ public class VertexArray {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+        enabled = true;
     }
 
     public static void unbind() {
@@ -80,9 +85,11 @@ public class VertexArray {
     }
 
     public void bind() {
-        glBindVertexArray(vao);
-        if (ibo > 0)
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        if(enabled) {
+            glBindVertexArray(vao);
+            if (ibo > 0)
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        }
     }
 
     public void render() {
@@ -90,10 +97,27 @@ public class VertexArray {
     }
 
     public void render(int glBeginMode){
-        if (ibo > 0)
-            glDrawElements(glBeginMode, count, GL_UNSIGNED_BYTE, 0);
-        else
-            glDrawArrays(glBeginMode, 0, count);
+        if(enabled) {
+            if (ibo > 0)
+                glDrawElements(glBeginMode, count, GL_UNSIGNED_BYTE, 0);
+            else
+                glDrawArrays(glBeginMode, 0, count);
+        }
     }
 
+    protected void delete(){
+        if(enabled) {
+            enabled = false;
+            VertexArray.unbind();
+            glDeleteVertexArrays(vao);
+            glDeleteBuffers(vbo);
+            glDeleteBuffers(ibo);
+            glDeleteBuffers(tbo);
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return enabled;
+    }
 }

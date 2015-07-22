@@ -36,12 +36,11 @@ import java.io.*;
  */
 public class ResourceUtils {
 
-    private static final String CLASS_NAME = ResourceUtils.class.getName();
-
     //prevent instantiation
     private ResourceUtils() {
     }
 
+    //load relative to the class path
     public static String loadAsString(String resourceName) {
         InputStream in = getResourceStream(resourceName);
         return ResourceUtils.readIntoString(new InputStreamReader(in));
@@ -51,7 +50,7 @@ public class ResourceUtils {
         InputStream in =  ResourceUtils.class.getClassLoader().getResourceAsStream(resourceName);
 
         if (in == null) {
-            Logger.log(CLASS_NAME + ": Tried to read non existing resource: " + resourceName, Logger.LEVEL.ERROR);
+            Logger.log(ResourceUtils.class, "Tried to read non existing resource: " + resourceName, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to read non existing resource: " + resourceName);
         }
 

@@ -24,11 +24,12 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.definition.ManagedObject;
 import lombok.Getter;
 import third.party.PNGDecoder;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -38,25 +39,31 @@ import static org.lwjgl.opengl.GL11.*;
  *
  * @author nZeloT
  */
-//TODO: add some doc
-public class Texture {
+//doc
+public class Texture extends ManagedObject {
 
-    private static int enabled;
+    private static int bound;
 
     private @Getter int width, height;
     private int texID;
+    private boolean enabled;
 
-    public Texture(String path) {
-        this.texID = load(path);
+    Texture(InputStream inputStream) {
+        this.texID = load(inputStream);
+        this.enabled = true;
     }
 
-    private int load(String path) {
+    Texture(int texID){
+        this.texID = texID;
+        this.enabled = true;
+    }
 
+    private int load(InputStream in) {
         int result;
 
         try {
 
-            PNGDecoder decoder = new PNGDecoder(new FileInputStream(path));
+            PNGDecoder decoder = new PNGDecoder(in);
             this.width = decoder.getWidth();
             this.height = decoder.getHeight();
 
@@ -82,13 +89,28 @@ public class Texture {
 
     public static void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
-        Texture.enabled = 0;
+        Texture.bound = 0;
     }
 
     public void bind() {
-        if (Texture.enabled != texID) {
+        if (enabled && Texture.bound != texID) {
             glBindTexture(GL_TEXTURE_2D, texID);
-            Texture.enabled = texID;
+            Texture.bound = texID;
         }
+    }
+
+    @Override
+    protected void delete() {
+        if(enabled){
+            Texture.unbind();
+            glDeleteTextures(texID);
+            texID = -1;
+            enabled = false;
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return enabled;
     }
 }

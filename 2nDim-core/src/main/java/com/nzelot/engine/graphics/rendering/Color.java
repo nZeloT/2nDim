@@ -28,14 +28,12 @@ import com.nzelot.engine.utils.logging.Logger;
 import lombok.NonNull;
 import org.joml.Vector4f;
 
-//TODO: add some doc
+//doc
 
 /**
  * @author nZeloT
  */
 public class Color {
-
-    private static final String CLASS_NAME = Color.class.getName();
 
     private static final float FACTOR = 0.75f;
 
@@ -53,6 +51,10 @@ public class Color {
         this.color = new Vector4f(r, g, b, 1.0f);
     }
 
+    public Color(int r, int g, int b){
+        this(r, g, b, 0);
+    }
+
     public Color(int r, int g, int b, int a){
         this.color = new Vector4f();
         setRed(r);
@@ -63,6 +65,13 @@ public class Color {
 
     public Vector4f asVector4f() {
         return color;
+    }
+
+    public String asRGBHexCode(){
+        int c =   ((int)(getRed()   *255)) << 16
+                | ((int)(getGreen() *255)) <<  8
+                | ((int)(getBlue()  *255));
+        return Integer.toHexString(c);
     }
 
     public float getRed() {
@@ -154,8 +163,8 @@ public class Color {
 
     private boolean checkBoundsFloat(float f){
         if(f < 0 || f > 1) {
-            Logger.log(CLASS_NAME + ": tried to set a component value out of Range!", Logger.LEVEL.ERROR);
-            throw new IllegalArgumentException(CLASS_NAME + ": tried to set a component value out of Range!");
+            Logger.log(Color.class, "Tried to set a component value out of Range!", Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to set a component value out of Range!");
         }
 
         return true;
@@ -163,8 +172,8 @@ public class Color {
 
     private boolean checkBoundsInt(int f){
         if(f < 0 || f > 255) {
-            Logger.log(CLASS_NAME + ": tried to set a component value out of Range!", Logger.LEVEL.ERROR);
-            throw new IllegalArgumentException(CLASS_NAME + ": tried to set a component value out of Range!");
+            Logger.log(Color.class, "Tried to set a component value out of Range!", Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to set a component value out of Range!");
         }
 
         return true;

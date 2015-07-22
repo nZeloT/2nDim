@@ -24,6 +24,7 @@
 
 package com.nzelot.engine.graphics.rendering;
 
+import com.nzelot.engine.definition.ManagedObject;
 import com.nzelot.engine.utils.logging.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -48,13 +49,16 @@ import static org.lwjgl.opengl.GL20.*;
  * @author nZeloT
  */
 //todo use uniform blocks for the projection and camera matrices instead of uniforms for each shader
-public class Shader {
+public class Shader extends ManagedObject {
 
     public static final int VERTEX_ATTRIB = 0;
     public static final int TCOORD_ATTRIB = 1;
-    private static final String CLASS_NAME = Shader.class.getName();
-    private static int enabled;
-    private final int ID;
+
+    private static int bound;
+
+    private boolean enabled;
+
+    private int ID;
     private Map<String, Integer> locationCache;
     private FloatBuffer buffer;
 
@@ -63,6 +67,7 @@ public class Shader {
         ID = ShaderUtils.create(vertex, fragment);
         locationCache = new HashMap<>();
         buffer = BufferUtils.createFloatBuffer(16);
+        enabled = true;
     }
 
     /**
@@ -70,7 +75,7 @@ public class Shader {
      */
     public static void unbind() {
         glUseProgram(0);
-        Shader.enabled = 0;
+        Shader.bound = 0;
     }
 
     /**
@@ -80,8 +85,10 @@ public class Shader {
      * @param value the new value
      */
     public void setUniform1i(String name, int value) {
-        if (enabled != ID) bind();
-        glUniform1i(getUniform(name), value);
+        if(enabled) {
+            bind();
+            glUniform1i(getUniform(name), value);
+        }
     }
 
     /**
@@ -89,9 +96,9 @@ public class Shader {
      * all the setXXX methods call bind if necessary
      */
     public void bind() {
-        if (Shader.enabled != ID) {
+        if (enabled && Shader.bound != ID) {
             glUseProgram(ID);
-            Shader.enabled = ID;
+            Shader.bound = ID;
         }
     }
 
@@ -107,7 +114,7 @@ public class Shader {
 
         int result = glGetUniformLocation(ID, name);
         if (result == -1) {
-            Logger.log(CLASS_NAME + ": Tried to get OpenGL ID of uniform value: " + name, Logger.LEVEL.ERROR);
+            Logger.log(Shader.class, "Tried to get OpenGL ID of uniform value: " + name, Logger.LEVEL.ERROR);
             throw new IllegalArgumentException("Tried to get OpenGL ID of uniform value: " + name);
         }else
             locationCache.put(name, result);
@@ -120,13 +127,17 @@ public class Shader {
      * @param value the new value
      */
     public void setUniform1f(String name, float value) {
-        if (enabled != ID) bind();
-        glUniform1f(getUniform(name), value);
+        if(enabled) {
+            bind();
+            glUniform1f(getUniform(name), value);
+        }
     }
 
     public void setUniform2f(String name, float x, float y) {
-        if (enabled != ID) bind();
-        glUniform2f(getUniform(name), x, y);
+        if(enabled) {
+            bind();
+            glUniform2f(getUniform(name), x, y);
+        }
     }
 
     /**
@@ -135,8 +146,10 @@ public class Shader {
      * @param vector the new values
      */
     public void setUniform3f(String name, Vector3f vector) {
-        if (enabled != ID) bind();
-        glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
+        if(enabled) {
+            bind();
+            glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
+        }
     }
 
     /**
@@ -146,8 +159,10 @@ public class Shader {
      * @param vector the new values
      */
     public void setUniform4f(String name, Vector4f vector) {
-        if (enabled != ID) bind();
-        glUniform4f(getUniform(name), vector.x, vector.y, vector.z, vector.w);
+        if(enabled) {
+            bind();
+            glUniform4f(getUniform(name), vector.x, vector.y, vector.z, vector.w);
+        }
     }
 
     /**
@@ -156,15 +171,30 @@ public class Shader {
      * @param matrix the new values
      */
     public void setUniformMat4f(String name, Matrix4f matrix) {
-        if (enabled != ID) bind();
+        if(enabled) {
+            bind();
 
-        matrix.get(buffer);
-        buffer.position(16); //Because reasons ...
-        buffer.flip(); // For the sake of god. Do not forget!
-        glUniformMatrix4fv(getUniform(name), false, buffer);
-        buffer.clear(); //Prepare for next round :D
+            matrix.get(buffer);
+            buffer.position(16); //Because reasons ...
+            buffer.flip(); // For the sake of god. Do not forget!
+            glUniformMatrix4fv(getUniform(name), false, buffer);
+            buffer.clear(); //Prepare for next round :D
+        }
     }
 
+    protected void delete(){
+        if(enabled) {
+            Shader.unbind();
+            glDeleteProgram(ID);
+            ID = -1;
+            enabled = false;
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return enabled;
+    }
 }
 
 /**
@@ -175,8 +205,6 @@ public class Shader {
  * @author TheCherno
  */
 class ShaderUtils {
-
-    private static final String CLASS_NAME = ShaderUtils.class.getName();
 
     //prevent instantiation
     private ShaderUtils() {
@@ -201,7 +229,7 @@ class ShaderUtils {
         if (glGetShaderi(vertID, GL_COMPILE_STATUS) == GL_FALSE) {
             String error = "Could not compile vertex shader!\n";
             error += glGetShaderInfoLog(vertID);
-            Logger.log(CLASS_NAME + ": " + error, Logger.LEVEL.ERROR);
+            Logger.log(Shader.class, error, Logger.LEVEL.ERROR);
             throw new IllegalStateException(error);
         }
 
@@ -209,7 +237,7 @@ class ShaderUtils {
         if (glGetShaderi(vertID, GL_COMPILE_STATUS) == GL_FALSE) {
             String error = "Could not compile fragment shader!\n";
             error += glGetShaderInfoLog(fragID);
-            Logger.log(CLASS_NAME + ": " + error, Logger.LEVEL.ERROR);
+            Logger.log(Shader.class, error, Logger.LEVEL.ERROR);
             throw new IllegalStateException(error);
         }
 
@@ -217,6 +245,9 @@ class ShaderUtils {
         glAttachShader(program, fragID);
         glLinkProgram(program);
         glValidateProgram(program);
+
+        glDetachShader(program, fragID);
+        glDetachShader(program, vertID);
 
         glDeleteShader(vertID);
         glDeleteShader(fragID);
