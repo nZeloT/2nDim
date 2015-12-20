@@ -24,9 +24,10 @@
 
 package com.nzelot.engine.graphics.scenegraph;
 
-import com.nzelot.engine.graphics.rendering.*;
+import com.nzelot.engine.graphics.rendering.Color;
+import com.nzelot.engine.graphics.rendering.ShaderManager;
+import com.nzelot.engine.graphics.rendering.VertexArrayManager;
 import lombok.NonNull;
-import org.dyn4j.geometry.Rectangle;
 import org.joml.Matrix4f;
 
 /**
@@ -34,30 +35,29 @@ import org.joml.Matrix4f;
  */
 //doc
 // for textures also set this.shader.setUniform1i("tex", 1);
-public class PhysicalRectangle extends PhysicalObject {
+public class Rectangle extends GameObject {
 
-    private Shader shader;
-    private VertexArray geo;
     private Color color;
 
     //doc
-    public PhysicalRectangle(String name, double sizeX, double sizeY, @NonNull Color color) {
-        super(name);
+    public Rectangle(String name, double sizeX, double sizeY, @NonNull Color color) {
+        super(name,
+                ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE),
+                VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE)
+        );
 
         //setup physics
-        addFixture(new Rectangle(sizeX, sizeY));
+        addFixture(new org.dyn4j.geometry.Rectangle(sizeX, sizeY));
         setMass();
 
         //setup appearance
-        this.shader = ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE);
-        this.geo = VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE);
         this.color = color;
     }
 
     //doc
     @Override
     protected void onAddToUniverse() {
-        shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
+        getShader().setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
     }
 
     //doc
@@ -75,14 +75,7 @@ public class PhysicalRectangle extends PhysicalObject {
     //doc
     @Override
     public void render(Matrix4f transformation) {
-        shader.setUniform4f("col", color.asVector4f());
-        shader.setUniformMat4f("mv_matrix", transMat);
-        shader.setUniformMat4f("cm_matrix", getUniverse().getCameraMat());
-        shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
-
-        shader.bind();
-        geo.bind();
-
-        geo.render();
+        getShader().setUniform4f("col", color.asVector4f());
+        super.render(transformation);
     }
 }

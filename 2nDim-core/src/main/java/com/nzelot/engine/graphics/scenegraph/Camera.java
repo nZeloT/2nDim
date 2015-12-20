@@ -79,7 +79,7 @@ public class Camera {
         key += this.toString();
         this.renderTarget = FrameBufferManager.instance.create(key, width, height);
 
-        Logger.log(Camera.class, "Created FBO with Id: " + key);
+        Logger.log(Camera.class, "Created FBO with Id: " + key, Logger.LEVEL.INFO);
     }
 
     //doc

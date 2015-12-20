@@ -29,6 +29,12 @@ import com.nzelot.engine.graphics.Window;
 import com.nzelot.engine.graphics.rendering.*;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Delegate;
+import org.dyn4j.collision.Bounds;
+import org.dyn4j.dynamics.Settings;
+import org.dyn4j.dynamics.World;
+import org.dyn4j.dynamics.joint.Joint;
+import org.dyn4j.geometry.Vector2;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -58,6 +64,8 @@ public class Universe {
 
     private boolean reorderObjects;
 
+    private @Delegate(types = WorldDelegates.class) World physics;
+
     //fixme this is only temporary i think. only until i implemented the use of FBO's
     private final @Getter Game game;
 
@@ -85,10 +93,14 @@ public class Universe {
         test = TextureManager.instance.get(TextureManager.STANDARD.NOT_FOUND);
 
         reorderObjects = false;
+
+        physics = new World();
     }
 
     //doc
     public void update(double delta) {
+        physics.update(delta);
+
         gameObjects.forEach(object -> object.updateWrap(delta));
 
         changeRenderOrder();
@@ -113,12 +125,12 @@ public class Universe {
 
         //Render the main camera fbo texture to the screen
         mainCamera.getRenderedTexture().bind();
-        //shader.setUniform1i("tex", 1);
+        shader.setUniform1i("tex", 1);
         //fixme always setting these matrices is not very usable. find a better solution
         //fixme as this also heavily influences the maximum fps
-        //shader.setUniformMat4f("pr_matrix", projMat);
-        //shader.setUniformMat4f("cm_matrix", camMat);
-        //shader.setUniformMat4f("mv_matrix", modMat);
+        shader.setUniformMat4f("pr_matrix", projMat);
+        shader.setUniformMat4f("cm_matrix", camMat);
+        shader.setUniformMat4f("mv_matrix", modMat);
 
         shader.bind();
         vao.bind();
@@ -130,8 +142,7 @@ public class Universe {
     public void addObject(@NonNull GameObject gameObject){
         gameObjects.add(gameObject);
         gameObject.setUniverse(this);
-
-        gameObject.onAddToUniverse();
+        physics.addBody(gameObject.getBody());
     }
 
     //doc
@@ -140,6 +151,7 @@ public class Universe {
 
         gameObjects.remove(gameObject);
         gameObject.setUniverse(null);
+        physics.removeBody(gameObject.getBody());
     }
 
     //doc
@@ -184,5 +196,20 @@ public class Universe {
             );
             reorderObjects = false;
         }
+    }
+
+    //doc
+    private interface WorldDelegates {
+        boolean removeJoint(Joint joint);
+        void removeAllJoints(boolean notify);
+
+        Settings getSettings();
+        void setSettings(Settings settings);
+
+        void setGravity(Vector2 gravity);
+        Vector2 getGravity();
+
+        void setBounds(Bounds bounds);
+        Bounds getBounds();
     }
 }

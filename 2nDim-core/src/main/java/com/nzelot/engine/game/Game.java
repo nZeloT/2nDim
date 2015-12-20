@@ -37,15 +37,15 @@ import third.party.SharedLibraryLoader;
  *
  * @author nZeloT
  */
-public abstract class Game<E extends Universe> {
+public abstract class Game {
 
-    private E universe;
+    private Universe universe;
     private Window window;
 
     private boolean running;
     private int targetFPS;
 
-    //todo add doc
+    //doc
     public Game(int width, int height, boolean fullscreen, String windowTitle) {
         this.running    = false;
         this.targetFPS  = 60;
@@ -107,7 +107,7 @@ public abstract class Game<E extends Universe> {
      *
      * @return the root object of the scenegraph. e.g. an instance of <code>Universe</code>
      */
-    protected abstract E initGame();
+    protected abstract Universe initGame();
 
     /**
      * the real game loop. calls <code>update()</code> and <code>render()</code> every frame.
@@ -238,7 +238,7 @@ public abstract class Game<E extends Universe> {
      *
      * @return the scene graph / world root node
      */
-    public E getUniverse() {
+    public Universe getUniverse() {
         return universe;
     }
 }

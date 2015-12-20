@@ -48,24 +48,24 @@ public class Sandbox {
         Logger.setCurrentOutputLevel(Logger.LEVEL.INFO);
         Logger.log(Sandbox.class, "Welcome to the Sandbox!", Logger.LEVEL.INFO);
 
-        Game<PhysicalUniverse> g = new Game<PhysicalUniverse>(1280, 720, false, "2nDim Sandbox! Enjoy :)") {
+        Game g = new Game(1280, 720, false, "2nDim Sandbox! Enjoy :)") {
 
             private Vehicle vehic;
-            private PhysicalObject floor;
+            private GameObject floor;
             private Camera camera;
 
             @Override
-            protected PhysicalUniverse initGame() {
+            protected Universe initGame() {
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GL13.glActiveTexture(GL13.GL_TEXTURE1);
 
-                PhysicalUniverse universe = new PhysicalUniverse(this);
+                Universe universe = new Universe(this);
                 //welcome to the moon :D
                 universe.setGravity(new Vector2(0, -9.81f * 1/16.0f));
                 camera = universe.getMainCamera();
 
-                floor = new PhysicalRectangle(
+                floor = new Rectangle(
                         "Floor",
                         20, 0.5,
                         new Color(0.4f, 0.8f, 0.2f)
@@ -79,11 +79,11 @@ public class Sandbox {
                 floor.setMass(Mass.Type.INFINITE);
 
                 //Generate the Bridge :D
-                PhysicalObject prev = floor;
-                PhysicalObject curr = null;
+                GameObject prev = floor;
+                GameObject curr = null;
 
                 for (int i = 0; i < 31; i++) {
-                    curr = new PhysicalRectangle("BridgeElem" + i, 1, 0.25, randomColor());
+                    curr = new Rectangle("BridgeElem" + i, 1, 0.25, randomColor());
                     universe.addObject(curr);
 
                     curr.translate(-14.5 + i, 4);
@@ -134,24 +134,24 @@ public class Sandbox {
 
 class Vehicle {
 
-    public PhysicalObject car;
-    public PhysicalObject wheel1;
-    public PhysicalObject wheel2;
+    public GameObject car;
+    public GameObject wheel1;
+    public GameObject wheel2;
 
     public Vehicle(Universe universe){
-        car = new PhysicalRectangle(
+        car = new Rectangle(
                 "Car",
                 3,0.5,
                 new Color(0.8f, 0.2f, 0.4f)
         );
 
-        wheel1 = new PhysicalCircle(
+        wheel1 = new Circle(
                 "Wheel1",
                 0.25,
                 new Color(0.2f, 0.4f, 0.8f)
         );
 
-        wheel2 = new PhysicalCircle(
+        wheel2 = new Circle(
                 "Wheel2",
                 0.25,
                 new Color(0.2f, 0.4f, 0.8f)

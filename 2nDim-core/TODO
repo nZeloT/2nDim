@@ -1,6 +1,6 @@
 
-    - implement FBO's to enable RTT.
     - think about using uniform blocks for distributing the projection as well as the camera matrix to every shader at once.
+    - add batch rendering in some form. i think this could give speed a nice improvement :)
     - improve documentation
     - replace some ugly code fragments. Mostly marked with //todo or //fixme
     - think about multithreading the update and render parts

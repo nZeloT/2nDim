@@ -65,7 +65,7 @@ public class Shader extends ManagedObject {
     // only visible within the package to prevent instantiation from outside the ShaderManager
     Shader(String vertex, String fragment) {
         ID = ShaderUtils.create(vertex, fragment);
-        locationCache = new HashMap<>();
+        locationCache = new HashMap<>(16);
         buffer = BufferUtils.createFloatBuffer(16);
         enabled = true;
     }
