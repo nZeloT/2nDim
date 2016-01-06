@@ -85,20 +85,20 @@ public class VertexArrayManager extends Manager<VertexArray> {
         SQUARE(
                 "com.nzelot.2nDim.vertexarray.standard.square",
                 new float[]{
-                        -0.5f, -0.5f, 0.0f, // 0-----1
-                        0.5f, -0.5f, 0.0f, // |     |
-                        0.5f, 0.5f, 0.0f, // |     |
-                        -0.5f, 0.5f, 0.0f  // 3-----2
+                        -0.5f, -0.5f, 0.0f, // 3-----2
+                        0.5f, -0.5f, 0.0f,  // |     |
+                        0.5f, 0.5f, 0.0f,   // |     |
+                        -0.5f, 0.5f, 0.0f   // 0-----1
                 },
                 new byte[]{
-                        0, 1, 2,
-                        0, 2, 3
+                        3, 2, 1,
+                        1, 0, 3
                 },
                 new float[]{
-                        0, 1,
-                        1, 1,
+                        0, 0,
                         1, 0,
-                        0, 0
+                        1, 1,
+                        0, 1
                 }
         ),
         //a 16 vert circle

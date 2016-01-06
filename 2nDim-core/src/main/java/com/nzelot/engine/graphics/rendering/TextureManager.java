@@ -31,6 +31,7 @@ import com.nzelot.engine.utils.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -55,6 +56,18 @@ public class TextureManager extends Manager<Texture> {
         }
 
         Texture t = new Texture(FileUtils.getInputStream(texFile));
+        objects.put(key, t);
+
+        return t;
+    }
+
+    public Texture create(@NonNull String key, @NonNull InputStream texFile){
+        if (objects.containsKey(key)) {
+            Logger.log(VertexArrayManager.class, "Tried to store already stored Texture with key: " + key, Logger.LEVEL.ERROR);
+            throw new IllegalArgumentException("Tried to store already stored Texture with key: " + key);
+        }
+
+        Texture t = new Texture(texFile);
         objects.put(key, t);
 
         return t;

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 nZeloT
+ * Copyright (c) 2016 nZeloT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,34 @@
 
 package com.nzelot.engine.graphics.scenegraph;
 
-import com.nzelot.engine.graphics.rendering.*;
+import com.nzelot.engine.graphics.rendering.Texture;
 
 /**
  * @author nZeloT
  */
-//doc
-// for textures also set this.shader.setUniform1i("tex", 1);
-public abstract class Rectangle extends GameObject {
+public class AnimatedSprite extends Sprite {
 
-    //doc
-    public Rectangle(String name, double sizeX, double sizeY) {
-        this(name, sizeX, sizeY,
-                ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE),
-                VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE)
-        );
+    private int texCount;
+    private double speed;
+
+    private double passed;
+
+    public AnimatedSprite(String name, double sizeX, double sizeY, Texture tex, int current, int texCount, double speed, int texPerRow, float texWidth, float texHeight) {
+        super(name, sizeX, sizeY, tex, current, texPerRow, texWidth, texHeight);
+        this.texCount = texCount;
+        this.speed = speed;
+        this.passed = 0;
     }
 
-    public Rectangle(String name, double sizeX, double sizeY, Shader shader, VertexArray geo){
-        super(name, shader, geo);
-
-        //setup physics
-        addFixture(new org.dyn4j.geometry.Rectangle(sizeX, sizeY));
-        setMass();
-    }
-
-    //doc
     @Override
-    protected void onAddToUniverse() {
-        getShader().setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
-    }
+    public void update(double delta) {
+        super.update(delta);
 
+        passed += delta;
+        if(passed >= speed){
+            passed = 0;
+            current = (current+1)%texCount;
+            changed = true;
+        }
+    }
 }

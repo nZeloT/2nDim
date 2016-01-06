@@ -123,6 +123,7 @@ public class ShaderManager extends Manager<Shader> {
 
         SQUARE("com.nzelot.2nDim.shader.standard.square", "res/shader/simple.vert", "res/shader/simpleAmbiant.frag"),
         SQUARE_TEXTURE("com.nzelot.2nDim.shader.standard.square_tex", "res/shader/simpleTex.vert", "res/shader/simpleTexturedAmbiant.frag"),
+        SQUARE_SPRITE("com.nzelot.2nDim.shader.standard.square_sprite", "res/shader/simpleTex.vert", "res/shader/simpleSpriteAmbiant.frag"),
         CIRCLE("com.nzelot.2nDim.shader.standard.circle", "res/shader/simpleTex.vert", "res/shader/simpleAmbiantCircle.frag"),
         CIRLCE_TEXTURE("com.nzelot.2nDim.shader.standard.circle_tex", "res/shader/simpleTex.vert", "res/shader/simpleTexturedAmbiantCircle.frag");
 

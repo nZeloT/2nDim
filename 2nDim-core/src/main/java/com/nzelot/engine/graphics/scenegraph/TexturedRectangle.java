@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 nZeloT
+ * Copyright (c) 2016 nZeloT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,34 +25,43 @@
 package com.nzelot.engine.graphics.scenegraph;
 
 import com.nzelot.engine.graphics.rendering.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.joml.Matrix4f;
 
 /**
  * @author nZeloT
  */
-//doc
-// for textures also set this.shader.setUniform1i("tex", 1);
-public abstract class Rectangle extends GameObject {
+public class TexturedRectangle extends Rectangle {
 
-    //doc
-    public Rectangle(String name, double sizeX, double sizeY) {
-        this(name, sizeX, sizeY,
-                ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE),
+    private @Getter(AccessLevel.PROTECTED) Texture tex;
+
+    TexturedRectangle(String name, double sizeX, double sizeY, Texture tex, Shader shader, VertexArray geo) {
+        super(name, sizeX, sizeY, shader, geo);
+        this.tex = tex;
+    }
+
+    public TexturedRectangle(String name, double sizeX, double sizeY, Texture tex) {
+        this(name, sizeX, sizeY, tex,
+                ShaderManager.instance.get(ShaderManager.STANDARD.SQUARE_TEXTURE),
                 VertexArrayManager.instance.get(VertexArrayManager.STANDARD.SQUARE)
         );
     }
 
-    public Rectangle(String name, double sizeX, double sizeY, Shader shader, VertexArray geo){
-        super(name, shader, geo);
-
-        //setup physics
-        addFixture(new org.dyn4j.geometry.Rectangle(sizeX, sizeY));
-        setMass();
-    }
-
-    //doc
     @Override
-    protected void onAddToUniverse() {
-        getShader().setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
+    public void update(double delta) {
+
     }
 
+    @Override
+    public void render(Matrix4f transformation) {
+        tex.bind();
+        getShader().setUniform1i("tex", 1);
+        super.render(transformation);
+    }
+
+    @Override
+    protected void onRemoveFromUniverse() {
+
+    }
 }

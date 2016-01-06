@@ -105,11 +105,11 @@ public class HtmlLogger extends Logger{
         WARNING(1, new Color(255, 133, 27)),
         ERROR(0, new Color(255, 65, 54));
 
-        private @Getter int priotity;
+        private @Getter int priority;
         private @Getter Color color;
 
         LogColor(int prio, Color color) {
-            this.priotity = prio;
+            this.priority = prio;
             this.color = color;
         }
 

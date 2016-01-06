@@ -117,14 +117,14 @@ public class Universe {
         mainCamera.cleanUp();
 
         //render to the camera fbo
-        mainCamera.activateForRendering();
+        mainCamera.makeActive();
 
         gameObjects.forEach(GameObject::renderWrap);
 
-        mainCamera.deactivateForRendering();
+        mainCamera.makeInactive();
 
         //Render the main camera fbo texture to the screen
-        mainCamera.getRenderedTexture().bind();
+        mainCamera.getRenderTarget().bind();
         shader.setUniform1i("tex", 1);
         //fixme always setting these matrices is not very usable. find a better solution
         //fixme as this also heavily influences the maximum fps

@@ -133,19 +133,19 @@ public class Camera {
     //doc
     public void setRotation(float rad) {
         if (rad < 0) {
-            rad = 0;
             Logger.log(Camera.class, "Tried set the rotation below 0. This is not allowed! " +
                     "The rotation to be set was: " + rad + ". It was instead set to 0.", Logger.LEVEL.WARNING);
+            rad = 0;
         }
 
         if (rad > TWO_PI) {
-            rad = (float) TWO_PI;
             Logger.log(Camera.class, "Tried to set the rotation above 2 * Pi. This is not allowed! " +
                     "The rotation to be set was: " + rad + ". It was instead set to 2 * Pi.", Logger.LEVEL.WARNING);
+            rad = (float) TWO_PI;
         }
 
-        this.rotation = rad;
-        this.recalcCamera = true;
+        rotation = rad;
+        recalcCamera = true;
     }
 
     //doc
@@ -153,14 +153,14 @@ public class Camera {
         zoomLevel += factor;
 
         if(zoomLevel < 1) {
-            zoomLevel = 1;
             Logger.log(Camera.class, "Tried to lower the zoom level below 1. This is not allowed! " +
                     "The zoom factor to be set was: " + factor + ". It was instead set to 1.", Logger.LEVEL.WARNING);
+            zoomLevel = 1;
         }
         if(zoomLevel > 75) {
-            zoomLevel = 75;
             Logger.log(Camera.class, "Tried to raise the zoom level above 75. This is not allowed! " +
                     "The zoom factor to be set was: " + factor + ". It was instead set to 75.", Logger.LEVEL.WARNING);
+            zoomLevel = 75;
         }
 
         recalcProjection = true;
@@ -185,7 +185,8 @@ public class Camera {
             ratio = 1;
         }
 
-        this.screenRation = ratio;
+        screenRation = ratio;
+        recalcProjection = true;
     }
 
     //doc
@@ -201,12 +202,12 @@ public class Camera {
     }
 
     //doc
-    public void activateForRendering(){
+    public void makeActive(){
         renderTarget.bind();
     }
 
     //doc
-    public void deactivateForRendering(){
+    public void makeInactive(){
         FrameBuffer.unbind();
     }
 
@@ -216,7 +217,7 @@ public class Camera {
     }
 
     //doc
-    public Texture getRenderedTexture(){
+    public Texture getRenderTarget(){
         return renderTarget.getTex();
     }
 

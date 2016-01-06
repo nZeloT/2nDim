@@ -37,6 +37,7 @@
     <modules>
         <module>2nDim-core</module>
         <module>2nDim-sandbox</module>
+        <module>2nDim-TheRun</module>
     </modules>
 
     <properties>
@@ -44,6 +45,7 @@
 
         <com.nzelot.engine.version>0.1-SNAPSHOT</com.nzelot.engine.version>
         <com.nzelot.sandbox.version>0.1-SNAPSHOT</com.nzelot.sandbox.version>
+        <main.java.com.nzelot.therun.version>0.1-SNAPSHOT</main.java.com.nzelot.therun.version>
 
         <lwjgl.version>3.0.0a</lwjgl.version>
         <dyn4j.version>3.1.11</dyn4j.version>

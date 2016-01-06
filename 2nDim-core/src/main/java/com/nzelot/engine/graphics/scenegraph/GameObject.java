@@ -84,7 +84,7 @@ public abstract class GameObject {
      * @param transformation the transformation matrix to pass to the shader; it was calculated according to the current position, rotation and scale
      */
     public void render(Matrix4f transformation){
-        shader.setUniformMat4f("mv_matrix", transMat);
+        shader.setUniformMat4f("mv_matrix", transformation);
         shader.setUniformMat4f("cm_matrix", getUniverse().getCameraMat());
         shader.setUniformMat4f("pr_matrix", getUniverse().getProjectionMat());
 

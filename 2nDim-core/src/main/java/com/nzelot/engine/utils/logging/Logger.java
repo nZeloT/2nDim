@@ -54,10 +54,6 @@ public abstract class Logger {
 
     protected abstract void log(Class<?> cls, String s, LEVEL logLevel, LEVEL currentOutputLevel);
 
-    public static void initLogging(Logger logger){
-        currentLogger = logger;
-    }
-
     public static void setCurrentLogger(@NonNull Logger currentLogger) {
         Logger.currentLogger = currentLogger;
     }
